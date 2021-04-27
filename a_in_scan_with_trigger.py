@@ -49,7 +49,7 @@ def main():
     interface_type = InterfaceType.ANY
     low_channel = 0
     high_channel = 0
-    samples_per_channel = 100
+    samples_per_channel = 100000
     rate = 48000
     # scan_options = ScanOption.CONTINUOUS | ScanOption.EXTTRIGGER
     scan_options = ScanOption.RETRIGGER | ScanOption.EXTTRIGGER | ScanOption.DEFAULTIO
@@ -67,10 +67,11 @@ def main():
             print('  [', i, '] ', devices[i].product_name, ' (',
                   devices[i].unique_id, ')', sep='')
 
-        descriptor_index = input('\nPlease select a DAQ device, enter a number'
-                                 + ' between 0 and '
-                                 + str(number_of_devices - 1) + ': ')
-        descriptor_index = int(descriptor_index)
+        # descriptor_index = input('\nPlease select a DAQ device, enter a number'
+        #                          + ' between 0 and '
+        #                          + str(number_of_devices - 1) + ': ')
+        # descriptor_index = int(descriptor_index)
+        descriptor_index = 0
         if descriptor_index not in range(number_of_devices):
             raise RuntimeError('Error: Invalid descriptor index')
 
@@ -99,8 +100,8 @@ def main():
         # The default input mode is SINGLE_ENDED.
         input_mode = AiInputMode.DIFFERENTIAL
         # If SINGLE_ENDED input mode is not supported, set to DIFFERENTIAL.
-        if ai_info.get_num_chans_by_mode(AiInputMode.SINGLE_ENDED) <= 0:
-            input_mode = AiInputMode.DIFFERENTIAL
+        # if ai_info.get_num_chans_by_mode(AiInputMode.SINGLE_ENDED) <= 0:
+        #     input_mode = AiInputMode.DIFFERENTIAL
 
         # Get the number of channels and validate the high channel number.
         number_of_channels = ai_info.get_num_chans_by_mode(input_mode)
@@ -126,7 +127,7 @@ def main():
         # type (or any other trigger parameter), uncomment this function call
         # and change the trigger type (or any other parameter)
         #ai_device.set_trigger(trigger_types[trigger_type_index], 0, 0, 0, 0)
-        ai_device.set_trigger(trigger_types[trigger_type_index], 0, 0, 0, samples_per_channel)
+        ai_device.set_trigger(trigger_types[trigger_type_index], 0, 0, 0, 1)
         
         data = create_float_buffer(channel_count, samples_per_channel)
 
