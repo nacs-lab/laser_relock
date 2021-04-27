@@ -1,0 +1,9 @@
+#!/usr/bin/python3
+
+from toptica.lasersdk import DLCpro, NetworkConnection
+
+ip = '192.168.0.205'
+
+with DLCpro(NetworkConnection(ip)) as dlc:
+    print(dlc.uptime_txt.get())
+
