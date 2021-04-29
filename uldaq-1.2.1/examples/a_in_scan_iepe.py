@@ -1,13 +1,16 @@
 #!/usr/bin/env python
-
+# -*- coding: UTF-8 -*-
 """
-Wrapper call demonstrated:        ai_device.set_trigger()
+Wrapper call demonstrated:      ai_device.a_in_scan() with IEPE mode enabled
 
-Purpose:                          Setup an external trigger
+Purpose:                        Performs a continuous scan of the range
+                                of A/D input channels
 
-Demonstration:                    Uses the first available trigger type to
-                                  set up an external trigger that is used
-                                  to start a scan
+Demonstration:                  Displays the analog input data for the
+                                range of user-specified channels using
+                                the first supported range and input mode.
+                                IEPE mode is enabled for all of specified
+                                channels.
 
 Steps:
 1.  Call get_daq_device_inventory() to get the list of available DAQ devices
@@ -18,10 +21,9 @@ Steps:
 5.  Call ai_device.get_info() to get the ai_info object for the AI subsystem
 6.  Verify the analog input subsystem has a hardware pacer
 7.  Call daq_device.connect() to establish a UL connection to the DAQ device
-8.  Call ai_info.get_trigger_types() to get the supported trigger types for the
-    AI subsystem
-9.  Call ai_device.set_trigger() to use the first available trigger type
-10. Call ai_device.a_in_scan() to start a triggered scan of of 10000 samples
+8.  Enable IEPE mode for the specified channels
+9.  Set coupling mode to AC for the specified channels
+10. Call ai_device.a_in_scan() to start a scan
 11. Call ai_device.get_scan_status() to check the status of the background
     operation
 12. Display the data for each channel
@@ -35,30 +37,33 @@ from os import system
 
 from uldaq import (get_daq_device_inventory, DaqDevice, AInScanFlag,
                    ScanOption, ScanStatus, create_float_buffer,
-                   InterfaceType, AiInputMode)
+                   InterfaceType, AiInputMode, IepeMode, CouplingMode)
 
 
 def main():
-    """Analog input scan with trigger example."""
+    """IEPE Analog input scan example."""
     daq_device = None
     ai_device = None
     status = ScanStatus.IDLE
 
     range_index = 0
-    trigger_type_index = 0
+    iepe_mode = IepeMode.ENABLED
+    coupling = CouplingMode.AC
+    sensor_sensitivity = 1.0  # volts per unit
     interface_type = InterfaceType.ANY
     low_channel = 0
-    high_channel = 0
-    samples_per_channel = 100
-    rate = 48000
-    # scan_options = ScanOption.CONTINUOUS | ScanOption.EXTTRIGGER
-    scan_options = ScanOption.RETRIGGER | ScanOption.EXTTRIGGER | ScanOption.BLOCKIO
+    high_channel = 3
+    samples_per_channel = 10000
+    rate = 100
+    scan_options = ScanOption.CONTINUOUS
     flags = AInScanFlag.DEFAULT
 
     try:
         # Get descriptors for all of the available DAQ devices.
         devices = get_daq_device_inventory(interface_type)
         number_of_devices = len(devices)
+
+        # Verify at least one DAQ device is detected.
         if number_of_devices == 0:
             raise RuntimeError('Error: No DAQ devices found')
 
@@ -80,14 +85,18 @@ def main():
         # Get the AiDevice object and verify that it is valid.
         ai_device = daq_device.get_ai_device()
         if ai_device is None:
-            raise RuntimeError('Error: The DAQ device does not support analog '
-                               'input')
+            raise RuntimeError(
+                'Error: The DAQ device does not support analog input')
 
-        # Verify the specified device supports hardware pacing for analog input.
+        # Verify the device supports hardware pacing for analog input.
         ai_info = ai_device.get_info()
         if not ai_info.has_pacer():
-            raise RuntimeError('\nError: The specified DAQ device does not '
-                               'support hardware paced analog input')
+            raise RuntimeError('Error: The DAQ device does not support '
+                               'hardware paced analog input')
+
+        # Verify the device supports IEPE
+        if not ai_info.supports_iepe():
+            raise RuntimeError('Error: The DAQ device does not support IEPE')
 
         # Establish a connection to the DAQ device.
         descriptor = daq_device.get_descriptor()
@@ -97,7 +106,7 @@ def main():
         daq_device.connect(connection_code=0)
 
         # The default input mode is SINGLE_ENDED.
-        input_mode = AiInputMode.DIFFERENTIAL
+        input_mode = AiInputMode.SINGLE_ENDED
         # If SINGLE_ENDED input mode is not supported, set to DIFFERENTIAL.
         if ai_info.get_num_chans_by_mode(AiInputMode.SINGLE_ENDED) <= 0:
             input_mode = AiInputMode.DIFFERENTIAL
@@ -113,46 +122,35 @@ def main():
         if range_index >= len(ranges):
             range_index = len(ranges) - 1
 
-        # Get a list of trigger types.
-        trigger_types = ai_info.get_trigger_types()
-        if not trigger_types:
-            raise RuntimeError('Error: The device does not support an external '
-                               'trigger')
+        # Set IEPE mode, AC coupling and sensor sensitivity for each channel
+        ai_config = ai_device.get_config()
+        for chan in range(low_channel, high_channel + 1):
+            ai_config.set_chan_iepe_mode(chan, iepe_mode)
+            ai_config.set_chan_coupling_mode(chan, coupling)
+            ai_config.set_chan_sensor_sensitivity(chan, sensor_sensitivity)
 
-        # Set the trigger.
-        #
-        # This example uses the default values for setting the trigger so there
-        # is no need to call this function. If you want to change the trigger
-        # type (or any other trigger parameter), uncomment this function call
-        # and change the trigger type (or any other parameter)
-        #ai_device.set_trigger(trigger_types[trigger_type_index], 0, 0, 0, 0)
-        ai_device.set_trigger(trigger_types[trigger_type_index], 0, 0, 0, samples_per_channel)
-        
         data = create_float_buffer(channel_count, samples_per_channel)
 
         print('\n', descriptor.dev_string, ' ready', sep='')
-        print('    Function demonstrated: ai_device.set_trigger()')
+        print('    Function demonstrated: ai_device.a_in_scan()')
         print('    Channels: ', low_channel, '-', high_channel)
         print('    Input mode: ', input_mode.name)
         print('    Range: ', ranges[range_index].name)
         print('    Samples per channel: ', samples_per_channel)
         print('    Rate: ', rate, 'Hz')
         print('    Scan options:', display_scan_options(scan_options))
-        print('    Trigger type:', trigger_types[trigger_type_index].name)
+        print('    Sensor Sensitivity: {:.6f}'.format(sensor_sensitivity),
+              '(V/unit)')
         try:
-            print(len(data))
             input('\nHit ENTER to continue\n')
         except (NameError, SyntaxError):
             pass
 
         system('clear')
 
-        ai_device.a_in_scan(low_channel, high_channel, input_mode,
-                            ranges[range_index], samples_per_channel, rate,
-                            scan_options, flags, data)
-
-        print('Please enter CTRL + C to quit waiting for trigger\n')
-        print('Waiting for trigger ...\n')
+        rate = ai_device.a_in_scan(low_channel, high_channel, input_mode,
+                                   ranges[range_index], samples_per_channel,
+                                   rate, scan_options, flags, data)
 
         try:
             while True:
@@ -162,10 +160,11 @@ def main():
                     index = transfer_status.current_index
                     if index >= 0:
                         system('clear')
-                        print('Please enter CTRL + C to terminate the process')
-                        print('\nActive DAQ device: ', descriptor.dev_string,
+                        print('Please enter CTRL + C to terminate the process',
+                              '\n')
+                        print('Active DAQ device: ', descriptor.dev_string,
                               ' (', descriptor.unique_id, ')\n', sep='')
-
+                        print('Actual scan rate = {:.6f}\n'.format(rate))
                         print('currentTotalCount = ',
                               transfer_status.current_total_count)
                         print('currentScanCount = ',
@@ -173,8 +172,7 @@ def main():
                         print('currentIndex = ', index, '\n')
 
                         for i in range(channel_count):
-                            print('chan =',
-                                  i + low_channel, ': ',
+                            print('chan ', i + low_channel, ' = ',
                                   '{:.6f}'.format(data[index + i]))
 
                     sleep(0.1)

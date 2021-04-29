@@ -1,13 +1,15 @@
-  #!/usr/bin/env python 
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
 
 """
-Wrapper call demonstrated:        ai_device.set_trigger()
+Wrapper call demonstrated:        ai_device.a_in_scan()
 
-Purpose:                          Setup an external trigger
+Purpose:                          Performs a continuous scan of the range
+                                  of A/D input channels
 
-Demonstration:                    Uses the first available trigger type to
-                                  set up an external trigger that is used
-                                  to start a scan
+Demonstration:                    Displays the analog input data for the
+                                  range of user-specified channels using
+                                  the first supported range and input mode
 
 Steps:
 1.  Call get_daq_device_inventory() to get the list of available DAQ devices
@@ -18,41 +20,36 @@ Steps:
 5.  Call ai_device.get_info() to get the ai_info object for the AI subsystem
 6.  Verify the analog input subsystem has a hardware pacer
 7.  Call daq_device.connect() to establish a UL connection to the DAQ device
-8.  Call ai_info.get_trigger_types() to get the supported trigger types for the
-    AI subsystem
-9.  Call ai_device.set_trigger() to use the first available trigger type
-10. Call ai_device.a_in_scan() to start a triggered scan of of 10000 samples
-11. Call ai_device.get_scan_status() to check the status of the background
+8.  Call ai_device.a_in_scan() to start the scan of A/D input channels
+9.  Call ai_device.get_scan_status() to check the status of the background
     operation
-12. Display the data for each channel
-13. Call ai_device.scan_stop() to stop the background operation
-14. Call daq_device.disconnect() and daq_device.release() before exiting the
+10. Display the data for each channel
+11. Call ai_device.scan_stop() to stop the background operation
+12. Call daq_device.disconnect() and daq_device.release() before exiting the
     process.
 """
 from __future__ import print_function
 from time import sleep
 from os import system
+from sys import stdout
 
+from uldaq import (get_daq_device_inventory, DaqDevice, AInScanFlag, ScanStatus,
+                   ScanOption, create_float_buffer, InterfaceType, AiInputMode)
 
-from uldaq import (get_daq_device_inventory, DaqDevice, AInScanFlag,    
-                   ScanOption, ScanStatus, create_float_buffer,         
-                   InterfaceType, AiInputMode)                          
 
 def main():
-    """Analog input scan with trigger example."""
+    """Analog input scan example."""
     daq_device = None
     ai_device = None
     status = ScanStatus.IDLE
 
     range_index = 0
-    trigger_type_index = 0
     interface_type = InterfaceType.ANY
     low_channel = 0
-    high_channel = 0
-    samples_per_channel = 100000
-    rate = 48000
-    # scan_options = ScanOption.CONTINUOUS | ScanOption.EXTTRIGGER
-    scan_options = ScanOption.RETRIGGER | ScanOption.EXTTRIGGER | ScanOption.DEFAULTIO
+    high_channel = 3
+    samples_per_channel = 10000
+    rate = 100
+    scan_options = ScanOption.CONTINUOUS
     flags = AInScanFlag.DEFAULT
 
     try:
@@ -67,11 +64,10 @@ def main():
             print('  [', i, '] ', devices[i].product_name, ' (',
                   devices[i].unique_id, ')', sep='')
 
-        # descriptor_index = input('\nPlease select a DAQ device, enter a number'
-        #                          + ' between 0 and '
-        #                          + str(number_of_devices - 1) + ': ')
-        # descriptor_index = int(descriptor_index)
-        descriptor_index = 0
+        descriptor_index = input('\nPlease select a DAQ device, enter a number'
+                                 + ' between 0 and '
+                                 + str(number_of_devices - 1) + ': ')
+        descriptor_index = int(descriptor_index)
         if descriptor_index not in range(number_of_devices):
             raise RuntimeError('Error: Invalid descriptor index')
 
@@ -89,7 +85,7 @@ def main():
         if not ai_info.has_pacer():
             raise RuntimeError('\nError: The specified DAQ device does not '
                                'support hardware paced analog input')
-        
+
         # Establish a connection to the DAQ device.
         descriptor = daq_device.get_descriptor()
         print('\nConnecting to', descriptor.dev_string, '- please wait...')
@@ -98,10 +94,10 @@ def main():
         daq_device.connect(connection_code=0)
 
         # The default input mode is SINGLE_ENDED.
-        input_mode = AiInputMode.DIFFERENTIAL
+        input_mode = AiInputMode.SINGLE_ENDED
         # If SINGLE_ENDED input mode is not supported, set to DIFFERENTIAL.
-        # if ai_info.get_num_chans_by_mode(AiInputMode.SINGLE_ENDED) <= 0:
-        #     input_mode = AiInputMode.DIFFERENTIAL
+        if ai_info.get_num_chans_by_mode(AiInputMode.SINGLE_ENDED) <= 0:
+            input_mode = AiInputMode.DIFFERENTIAL
 
         # Get the number of channels and validate the high channel number.
         number_of_channels = ai_info.get_num_chans_by_mode(input_mode)
@@ -114,32 +110,17 @@ def main():
         if range_index >= len(ranges):
             range_index = len(ranges) - 1
 
-        # Get a list of trigger types.
-        trigger_types = ai_info.get_trigger_types()
-        if not trigger_types:
-            raise RuntimeError('Error: The device does not support an external '
-                               'trigger')
-
-        # Set the trigger.
-        #
-        # This example uses the default values for setting the trigger so there
-        # is no need to call this function. If you want to change the trigger
-        # type (or any other trigger parameter), uncomment this function call
-        # and change the trigger type (or any other parameter)
-        #ai_device.set_trigger(trigger_types[trigger_type_index], 0, 0, 0, 0)
-        ai_device.set_trigger(trigger_types[trigger_type_index], 0, 0, 0, 1)
-        
+        # Allocate a buffer to receive the data.
         data = create_float_buffer(channel_count, samples_per_channel)
 
         print('\n', descriptor.dev_string, ' ready', sep='')
-        print('    Function demonstrated: ai_device.set_trigger()')
+        print('    Function demonstrated: ai_device.a_in_scan()')
         print('    Channels: ', low_channel, '-', high_channel)
         print('    Input mode: ', input_mode.name)
         print('    Range: ', ranges[range_index].name)
         print('    Samples per channel: ', samples_per_channel)
         print('    Rate: ', rate, 'Hz')
         print('    Scan options:', display_scan_options(scan_options))
-        print('    Trigger type:', trigger_types[trigger_type_index].name)
         try:
             input('\nHit ENTER to continue\n')
         except (NameError, SyntaxError):
@@ -147,39 +128,38 @@ def main():
 
         system('clear')
 
-        ai_device.a_in_scan(low_channel, high_channel, input_mode,
-                            ranges[range_index], samples_per_channel, rate,
-                            scan_options, flags, data)
-
-        print('Please enter CTRL + C to quit waiting for trigger\n')
-        print('Waiting for trigger ...\n')
+        # Start the acquisition.
+        rate = ai_device.a_in_scan(low_channel, high_channel, input_mode,
+                                   ranges[range_index], samples_per_channel,
+                                   rate, scan_options, flags, data)
 
         try:
-            n = 1;
             while True:
                 try:
+                    # Get the status of the background operation
                     status, transfer_status = ai_device.get_scan_status()
 
+                    reset_cursor()
+                    print('Please enter CTRL + C to terminate the process\n')
+                    print('Active DAQ device: ', descriptor.dev_string, ' (',
+                          descriptor.unique_id, ')\n', sep='')
+
+                    print('actual scan rate = ', '{:.6f}'.format(rate), 'Hz\n')
+
                     index = transfer_status.current_index
-                    if index >= 0:
-                        system('clear')
-                        print('Please enter CTRL + C to terminate the process')
-                        print('\nActive DAQ device: ', descriptor.dev_string,
-                              ' (', descriptor.unique_id, ')\n', sep='')
+                    print('currentTotalCount = ',
+                          transfer_status.current_total_count)
+                    print('currentScanCount = ',
+                          transfer_status.current_scan_count)
+                    print('currentIndex = ', index, '\n')
 
-                        print('currentTotalCount = ',
-                              transfer_status.current_total_count)
-                        print('currentScanCount = ',
-                              transfer_status.current_scan_count)
-                        print('currentIndex = ', index, '\n')
+                    # Display the data.
+                    for i in range(channel_count):
+                        clear_eol()
+                        print('chan =',
+                              i + low_channel, ': ',
+                              '{:.6f}'.format(data[index + i]))
 
-                        for i in range(channel_count):
-                            print('chan =',
-                                  i + low_channel, ': ',
-                                  '{:.6f}'.format(data[index + i]))
-                        print(status)
-                        print(n);
-                    n = n+1;
                     sleep(0.1)
                 except (ValueError, NameError, SyntaxError):
                     break
@@ -208,6 +188,16 @@ def display_scan_options(bit_mask):
         if option & bit_mask:
             options.append(option.name)
     return ', '.join(options)
+
+
+def reset_cursor():
+    """Reset the cursor in the terminal window."""
+    stdout.write('\033[1;1H')
+
+
+def clear_eol():
+    """Clear all characters to the end of the line."""
+    stdout.write('\x1b[2K')
 
 
 if __name__ == '__main__':
