@@ -1,0 +1,29 @@
+#!/usr/bin/python3
+
+from uldaq import (get_daq_device_inventory, DaqDevice, AInScanFlag,
+                   ScanOption, ScanStatus, create_float_buffer,
+                   InterfaceType, AiInputMode)
+
+class mcc_daq:
+    def __init__(self, descriptor_index=0):
+        interface_type = InterfaceType.ANY
+        devices = get_daq_device_inventory(interface_type)
+        self.daq_device = DaqDevice(devices[descriptor_index])    
+        self._descriptor = self.daq_device.get_descriptor()
+        self.ai = None
+        self.ao = None
+        self.dio = None
+        
+    def descriptor(self):
+        print(self._descriptor)
+        
+    def connect(self):
+        self.daq_device.connect(connection_code=0)
+
+    def disconnect(self):
+        if self.daq_device.is_connected():
+            self.daq_device.disconnect()
+        self.daq_device.release()
+
+
+        

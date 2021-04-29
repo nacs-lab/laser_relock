@@ -5,9 +5,9 @@ from os import system
 import numpy as np
 import matplotlib.pyplot as plt
 
-from uldaq import (get_daq_device_inventory, DaqDevice, AInScanFlag,    
-                   ScanOption, ScanStatus, create_float_buffer,         
-                   InterfaceType, AiInputMode)                          
+from uldaq import (get_daq_device_inventory, DaqDevice, AInScanFlag,
+                   ScanOption, ScanStatus, create_float_buffer,
+                   InterfaceType, AiInputMode)
 
 def main():
     daq_device = None
@@ -32,20 +32,17 @@ def main():
         number_of_devices = len(devices)
 
         daq_device = DaqDevice(devices[descriptor_index])
-
-        ai_device = daq_device.get_ai_device()
-        
-        ai_info = ai_device.get_info()
         
         descriptor = daq_device.get_descriptor()
 
         daq_device.connect(connection_code=0)
-        
+
+        ai_device = daq_device.get_ai_device()
+        ai_info = ai_device.get_info()
         number_of_channels = ai_info.get_num_chans_by_mode(input_mode)
         channel_count = high_channel - low_channel + 1
         
         ranges = ai_info.get_ranges(input_mode)
-
         trigger_types = ai_info.get_trigger_types()
         
         ai_device.set_trigger(trigger_types[trigger_type_index], 0,
@@ -54,8 +51,8 @@ def main():
         data = create_float_buffer(channel_count, samples_per_channel)
 
         ai_device.a_in_scan(low_channel, high_channel, input_mode,
-                            ranges[range_index], samples_per_channel, sample_rate,
-                            scan_options, flags, data)
+                            ranges[range_index], samples_per_channel,
+                            sample_rate,scan_options, flags, data)
 
         n=1
         while status:
