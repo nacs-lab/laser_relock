@@ -3,25 +3,30 @@
 from numpy import reshape
 from uldaq import (get_daq_device_inventory, DaqDevice, AInScanFlag,
                    ScanOption, ScanStatus, create_float_buffer,
-                   InterfaceType, AiInputMode)
+                   InterfaceType, AiInputMode,
+                   DigitalDirection, DigitalPortIoType)
+import re
 
 class mcc_daq:
     def __init__(self, device_index=0):
         interface_type = InterfaceType.ANY
         devices = get_daq_device_inventory(interface_type)
-        self.daq_device = DaqDevice(devices[device_index])    
+        self.device_index = device_index
+        self.daq_device = DaqDevice(devices[self.device_index])    
         self.descriptor = self.daq_device.get_descriptor()
         self.ai = self.analog_input(self.daq_device)
+        self.dio = self.digital_io(self.daq_device)
         self.connect()
-        print('Connected to',self.descriptor)
         
     def connect(self):
         self.daq_device.connect(connection_code=0)
+        print('Connected device',self.device_index,':',self.descriptor)
 
     def disconnect(self):
         if self.daq_device.is_connected():
             self.daq_device.disconnect()
         self.daq_device.release()
+        print('Disconnected device',self.device_index,':',self.descriptor)
 
     class analog_input:
         def __init__(self,daq_device):
@@ -89,3 +94,48 @@ class mcc_daq:
         def get_status(self):
             self.status, transfer_status = self.ai_device.get_scan_status()
             return self.status,transfer_status
+        
+    class digital_io:
+        def __init__(self,daq_device):
+            self.dio_device = daq_device.get_dio_device()
+            self.dio_info = self.dio_device.get_info()
+            
+        def config_port(self,port,direction):
+            port = self.parse_port(port)
+            direction = self.parse_direction(direction)
+            self.dio_device.d_config_port(port, direction)
+            #print('Configured port',port,'for direction',direction)
+
+        def config_bit(self,port,bit,direction):
+            port = self.parse_port(port)
+            direction = self.parse_direction(direction)
+            self.dio_device.d_config_bit(port,bit,direction)
+
+        def bit_out(self,port,bit,value):
+            port = self.parse_port(port)
+            self.dio_device.d_bit_out(port,bit,value)
+
+        def port_out(self,port,value):
+            port = self.parse_port(port)
+            self.dio_device.d_out(port,int(value))
+
+        def parse_port(self,port):
+            dio_info = self.dio_device.get_info()
+            port_types = dio_info.get_port_types()        
+            return port_types[port]
+
+        def parse_direction(self,direction):
+            if isinstance(direction,str):
+                if re.search(direction.lower(),'input'):
+                    direction = DigitalDirection.INPUT
+                elif re.search(direction.lower(),'output'):
+                    direction = DigitalDirection.OUTPUT                    
+                else:
+                    raise RuntimeError('direction must be in or out')
+            elif isinstance(direction,bool):
+                direction = (DigitalDirection.OUTPUT if direction
+                             else DigitalDirection.INPUT)
+            else:
+                raise RuntimeError('invalid data type for direction')
+
+            return direction
