@@ -28,7 +28,8 @@ class test_client(object):
         # self.__sock.send_string("end_seq", zmq.SNDMORE)
         return self.__sock.send(value.to_bytes(4, byteorder='little'))
 
-cl = test_client('tcp://127.0.0.1:8000')
+# cl = test_client('tcp://127.0.0.1:8000')
+cl = test_client('tcp://nacs.nigrp.org:5633')
 
 val = 0
 
