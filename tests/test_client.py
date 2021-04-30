@@ -2,6 +2,7 @@
 
 import zmq
 import array
+import time 
 
 class test_client(object):
     def recreate_sock(self):
@@ -24,5 +25,15 @@ class test_client(object):
             return
         return int.from_bytes(self.__sock.recv(), byteorder = 'little')
     def send_int(self, value):
-        self.__sock.send_string("end_seq", zmq.SNDMORE)
+        # self.__sock.send_string("end_seq", zmq.SNDMORE)
         return self.__sock.send(value.to_bytes(4, byteorder='little'))
+
+cl = test_client('tcp://127.0.0.1:8000')
+
+val = 0
+
+while True:
+    cl.send_int(val)   
+    time.sleep(0.5)
+    val = cl.recv_int()
+    print(val)

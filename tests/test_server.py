@@ -2,6 +2,7 @@
 
 import zmq
 import array
+import time
 
 class test_server(object):
     def recreate_sock(self):
@@ -25,3 +26,16 @@ class test_server(object):
         return int.from_bytes(self.__sock.recv(), byteorder = 'little')
     def send_int(self,val):
         return self.__sock.send(int(val).to_bytes(4, byteorder = 'little'))
+
+serv = test_server('tcp://127.0.0.1:8000')
+
+while True:
+    val = serv.recv_int()
+
+    if val==None:
+        print('timeout')
+        continue
+    
+    print(val)
+    time.sleep(0.5)
+    serv.send_int(val+1)
