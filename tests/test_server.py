@@ -27,7 +27,8 @@ class test_server(object):
     def send_int(self,val):
         return self.__sock.send(int(val).to_bytes(4, byteorder = 'little'))
 
-serv = test_server('tcp://127.0.0.1:8000')
+# serv = test_server('tcp://127.0.0.1:8000')
+serv = test_server('tcp://192.168.0.110:9876')
 
 while True:
     val = serv.recv_int()
