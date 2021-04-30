@@ -1,5 +1,11 @@
 #!/usr/bin/python
 
+'''
+hello world for zmq between raspi and pc outside lab
+server part
+'''
+
+
 import zmq
 import array
 import time 
