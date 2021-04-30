@@ -1,0 +1,10 @@
+#!/usr/bin/python3
+
+from mcc_daq import mcc_daq
+
+daq = mcc_daq(0)
+
+
+
+daq.disconnect()
+
