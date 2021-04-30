@@ -1,15 +1,15 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 import zmq
 import array
 
-class test_server(object):
+class test_client(object):
     def recreate_sock(self):
         if self.__sock is not None:
             self.__sock.close()
-        self.__sock = self.__ctx.socket(zmq.REP) # Reply socket
+        self.__sock = self.__ctx.socket(zmq.REQ) # Request socket
         self.__sock.setsockopt(zmq.LINGER, 0) # discards messages when socket is closed
-        self.__sock.bind(self.__url)
+        self.__sock.connect(self.__url)
     def __init__(self, url):
         self.__url = url
         self.__ctx = zmq.Context()
@@ -23,5 +23,6 @@ class test_server(object):
         if self.__sock.poll(timeout) == 0:
             return
         return int.from_bytes(self.__sock.recv(), byteorder = 'little')
-    def send_int(self,val):
-        return self.__sock.send(int(val).to_bytes(4, byteorder = 'little'))
+    def send_int(self, value):
+        self.__sock.send_string("end_seq", zmq.SNDMORE)
+        return self.__sock.send(value.to_bytes(4, byteorder='little'))
