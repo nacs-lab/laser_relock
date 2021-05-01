@@ -22,7 +22,7 @@ class mcc_daq:
         self.ai = self.analog_input(self.daq_device)
         self.dio = self.digital_io(self.daq_device)
         self.ao = self.analog_output(self.daq_device)
-        self.connect()
+        # self.connect()
         
     def connect(self):
         self.daq_device.connect(connection_code=0)
@@ -93,8 +93,12 @@ class mcc_daq:
             
 
         def get_status(self):
-            self.status, transfer_status = self.ai_device.get_scan_status()
-            return self.status,transfer_status
+            self.status, self.transfer_status = self.ai_device.get_scan_status()
+            return self.status,self.transfer_status
+
+        def get_index(self):
+            self.get_status()
+            return self.transfer_status.current_index
 
     class analog_output:
         def __init__(self,daq_device):

@@ -1,8 +1,21 @@
 #!/usr/bin/python3
 
-from toptica.lasersdk.dlcpro.v2_1_0 import DLCpro, NetworkConnection
+from toptica.lasersdk.dlcpro.v2_0_3 import DLCpro, NetworkConnection
 
 ip = '192.168.0.205'
+
+
+class someclass:
+    def __init__(self):
+        self.dlc = DLCpro(NetworkConnection(ip))
+    def read_voltage(self):
+        self.dlc.laser1.dl.pc.voltage_set.get()
+
+laser = someclass()
+with laser.dlc as dlc:
+    print(dlc.laser1.dl.pc.voltage_set.get())    
+#laser.read_voltage()
+        
 
 
 with DLCpro(NetworkConnection(ip)) as dlc:
