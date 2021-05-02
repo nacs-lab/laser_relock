@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import zmq
+import types
 
 URL = 'tcp://nacs.nigrp.org:5633'
 
@@ -19,7 +20,7 @@ class lock_control_client(object):
     def __del__(self):
         self.__sock.close()
         self.__ctx.destroy()
-    def get(self,value):
+    def get(self,value,args=None):
         self.__sock.send_string(value)
         val_type = self.__sock.recv_string()
         print(val_type)
@@ -28,7 +29,7 @@ class lock_control_client(object):
 def main():
     # cl = lock_control_client('tcp://127.0.0.1:8000')
     cl = lock_control_client('tcp://nacs.nigrp.org:5633')
-    val = 'ramp'
+    val = 'laser.read_current'
     cl.get(val)
 
 if __name__=="__main__":

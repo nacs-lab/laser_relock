@@ -3,6 +3,7 @@
 import zmq
 from lock_control import lock_control
 import functools
+import inspect
 
 class lock_control_server(object):
     def recreate_sock(self):
@@ -44,7 +45,7 @@ def rsetattr(obj, attr, val):
 
 def rgetattr(obj, attr, *args):
     def _getattr(obj, attr):
-        return getattr(obj, attr, *args)
+        return inspect.getattr_static(obj, attr, *args)
     return functools.reduce(_getattr, [obj] + attr.split('.'))
 
 def main():
