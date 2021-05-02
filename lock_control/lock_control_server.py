@@ -33,6 +33,7 @@ class lock_control_server(object):
             attr_type = type(attr)
             print(attr_type)
             print('function? ',inspect.isfunction(attr))
+            print(args)
         except:
             print('attribute does not exist')
             attr_type = None

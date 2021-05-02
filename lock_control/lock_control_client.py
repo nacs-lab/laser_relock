@@ -20,7 +20,7 @@ class lock_control_client(object):
     def __del__(self):
         self.__sock.close()
         self.__ctx.destroy()
-    def get(self,value,args=None):
+    def get(self,value,*args):
         self.__sock.send_string(value,zmq.SNDMORE)
         self.__sock.send_pyobj(args)
         val_type = self.__sock.recv_string()
@@ -30,8 +30,9 @@ class lock_control_client(object):
 def main():
     # cl = lock_control_client('tcp://127.0.0.1:8000')
     cl = lock_control_client('tcp://nacs.nigrp.org:5633')
-    val = 'laser.set_current'
-    cl.get(val)
+    val = 'wm.read'
+    args = 20
+    cl.get(val,args)
 
 if __name__=="__main__":
     main()
