@@ -25,8 +25,8 @@ class lock_control_server(object):
             print('timeout')
             return 
         cmd = self.__sock.recv_string()
-        attr = getattr(self.lc, cmd)
         try:
+            attr = getattr(self.lc, cmd)
             attr_type = type(attr)
             print(attr_type)
         except:
