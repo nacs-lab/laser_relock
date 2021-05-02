@@ -2,6 +2,7 @@
 
 import zmq
 import types
+import time
 
 URL = 'tcp://nacs.nigrp.org:5633'
 
@@ -39,7 +40,8 @@ class lock_control_client(object):
         return self.__sock.recv_pyobj()
 
 
-def main():
+def main():   
+
     # cl = lock_control_client('tcp://127.0.0.1:8000')
     cl = lock_control_client('tcp://nacs.nigrp.org:5633')
     result = cl.Get('wm.filename')
@@ -53,6 +55,13 @@ def main():
 
     result = cl.Call('errsig.get_index')
     print(result)
+
+    time.sleep(1)
+
+    result = cl.Call('errsig.get_index')
+    print(result)
+
+    time.sleep(1)
 
     result = cl.Call('errsig.stop')
     print(result)
