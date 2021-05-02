@@ -101,6 +101,8 @@ class lock_control:
     class _laser:
         def __init__(self,dlc_ip=DLC_IP):
             self.dlc = DLCpro(NetworkConnection(dlc_ip))
+            self.current = self.read_current()
+            self.piezo = self.read_piezo()
             
         def read_current(self):
             with self.dlc as dlc:

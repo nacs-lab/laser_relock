@@ -20,21 +20,30 @@ class lock_control_client(object):
     def __del__(self):
         self.__sock.close()
         self.__ctx.destroy()
-    def get(self,value,*args):
-        self.__sock.send_string(value,zmq.SNDMORE)
+    def Call(self,name,*args):
+        self.__sock.send_string("call",zmq.SNDMORE)
+        self.__sock.send_string(name,zmq.SNDMORE)
         if len(args)==1 and isinstance(args[0],dict):
             self.__sock.send_pyobj(args[0])
         else:
             self.__sock.send_pyobj(args)
-        #val_type = self.__sock.recv_string()
-        result = self.__sock.recv_pyobj()
-        print(result)
+        return self.__sock.recv_pyobj()
+    def Get(self,name):
+        self.__sock.send_string("get",zmq.SNDMORE)
+        self.__sock.send_string(name)
+        return self.__sock.recv_pyobj()
+    def Set(self,name,value):
+        self.__sock.send_string("set",zmq.SNDMORE)
+        self.__sock.send_string(name,zmq.SNDMORE)
+        self.__sock.send_pyobj(value)
+        return self.__sock.recv_pyobj()
 
 
 def main():
     # cl = lock_control_client('tcp://127.0.0.1:8000')
     cl = lock_control_client('tcp://nacs.nigrp.org:5633')
-    val = 'lock.status'
+    val = 'wm.filename'
+    #args = {'piezo':82.504}
     cl.get(val)
 
 if __name__=="__main__":

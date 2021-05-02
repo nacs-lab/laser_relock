@@ -5,6 +5,9 @@ from lock_control import lock_control
 import functools
 import inspect
 
+# URL = 'tcp://127.0.0.1:8000'
+URL = 'tcp://192.168.0.110:9876'
+
 class lock_control_server(object):
     def recreate_sock(self):
         if self.__sock is not None:
@@ -12,7 +15,7 @@ class lock_control_server(object):
         self.__sock = self.__ctx.socket(zmq.REP) # Reply socket
         self.__sock.setsockopt(zmq.LINGER, 0) # discards messages when socket is closed
         self.__sock.bind(self.__url)
-    def __init__(self, url):
+    def __init__(self, url=URL):
         self.__url = url
         self.__ctx = zmq.Context()
         self.__sock = None
@@ -24,45 +27,45 @@ class lock_control_server(object):
     def listen(self):
         timeout = 1 * 1000 # in milliseconds
         if self.__sock.poll(timeout) == 0:
-            print('timeout')
-            return 
+            return
         cmd = self.__sock.recv_string()
-        args = self.__sock.recv_pyobj()
-        try:
-            attr = rgetattr(self.lc, cmd)
-            attr_type = type(attr)
-            print(attr_type)
-            print('method? ',inspect.ismethod(attr))
-            print(args)
-            if inspect.ismethod(attr):
-                if isinstance(args,tuple):
-                    result = attr(*args)
-                elif isinstance(args,dict):
-                    result = attr(**args)
-            else:
-                result = attr
-        except Exception as inst:
-            print(inst)
-            attr_type = None
-            result = None
-        #self.__sock.send_string(str(attr_type))
+        name = self.__sock.recv_string()
+        if cmd=="get"
+            result = self.Get(name)
+        elif cmd=="set"
+            result = self.Set(name,value)
+        elif cmd=="call"
+            result = self.Call(name,args)
+        else:
+            result = Exception('')
         self.__sock.send_pyobj(result)
+
+    def Get(self,name):
+        return rgetattr(self.lc, cmd)
+
+    def Set(self,name,value):
+        return rsetattr(self.lc, name, value)
+
+    def Call(self,name,args):
+        attr = rgetattr(self.lc, cmd)
+        if isinstance(args,tuple):
+            result = attr(*args)
+        elif isinstance(args,dict):
+            result = attr(**args)
+        return result
 
 # from https://stackoverflow.com/questions/31174295/getattr-and-setattr...
 # -on-nested-objects/31174427?noredirect=1#comment86638618_31174427
-
 def rsetattr(obj, attr, val):
     pre, _, post = attr.rpartition('.')
     return setattr(rgetattr(obj, pre) if pre else obj, post, val)
-
 def rgetattr(obj, attr, *args):
     def _getattr(obj, attr):
         return getattr(obj, attr, *args)
     return functools.reduce(_getattr, [obj] + attr.split('.'))
 
 def main():
-    # serv = lock_control_server('tcp://127.0.0.1:8000')
-    serv = lock_control_server('tcp://192.168.0.110:9876')
+    serv = lock_control_server()
     while True:
         try:
             serv.listen()
