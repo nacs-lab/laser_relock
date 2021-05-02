@@ -54,7 +54,7 @@ def rsetattr(obj, attr, val):
 
 def rgetattr(obj, attr, *args):
     def _getattr(obj, attr):
-        return inspect.getattr_static(obj, attr, *args)
+        return getattr(obj, attr, *args)
     return functools.reduce(_getattr, [obj] + attr.split('.'))
 
 def main():
