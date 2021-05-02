@@ -26,7 +26,7 @@ class lock_control_server(object):
             return 
         cmd = self.__sock.recv_string()
         attr = getattr(self.lc, cmd)
-        self.__sock.send_string(str(typeof(attr)))
+        self.__sock.send_string(str(type(attr)))
 
 def main():
     # serv = lock_control_server('tcp://127.0.0.1:8000')
