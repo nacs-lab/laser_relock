@@ -40,8 +40,8 @@ class lock_control_server(object):
                 elif isinstance(args,dict):
                     result = attr(**args)
                 print(result)
-        except:
-            print('error')
+        except Exception as inst:
+            print(inst)
             attr_type = None
         self.__sock.send_string(str(attr_type))
 
