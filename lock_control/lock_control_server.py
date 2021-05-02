@@ -39,11 +39,13 @@ class lock_control_server(object):
                     result = attr(*args)
                 elif isinstance(args,dict):
                     result = attr(**args)
-                print(result)
+            else:
+                result = attr
         except Exception as inst:
             print(inst)
             attr_type = None
-        self.__sock.send_string(str(attr_type))
+        #self.__sock.send_string(str(attr_type))
+        self.__sock.send_pyobj(result)
 
 # from https://stackoverflow.com/questions/31174295/getattr-and-setattr...
 # -on-nested-objects/31174427?noredirect=1#comment86638618_31174427

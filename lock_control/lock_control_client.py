@@ -22,9 +22,13 @@ class lock_control_client(object):
         self.__ctx.destroy()
     def get(self,value,*args):
         self.__sock.send_string(value,zmq.SNDMORE)
-        self.__sock.send_pyobj(args)
-        val_type = self.__sock.recv_string()
-        print(val_type)
+        if len(args)==1 and isinstance(args[0],dict):
+            self.__sock.send_pyobj(args[0])
+        else:
+            self.__sock.send_pyobj(args)
+        #val_type = self.__sock.recv_string()
+        result = self.__sock.recv_pyobj()
+        print(result)
 
 
 def main():
