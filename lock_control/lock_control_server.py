@@ -31,6 +31,7 @@ class lock_control_server(object):
             attr = rgetattr(self.lc, cmd)
             attr_type = type(attr)
             print(attr_type)
+            print('method? ',inspect.ismethod(attr))
         except:
             print('attribute does not exist')
             attr_type = None
