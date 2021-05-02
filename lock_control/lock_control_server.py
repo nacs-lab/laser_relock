@@ -39,7 +39,10 @@ class lock_control_server(object):
             result = self.Call(name,args)
         else:
             result = Exception('Command must be one of ("get","set","call")')
-        self.__sock.send_pyobj(result)
+        try:
+            self.__sock.send_pyobj(result)
+        except:
+            self.__sock.send_string('incompatible type')
     def Get(self,name):
         try:
             result = rgetattr(self.lc, name)
