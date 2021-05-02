@@ -44,7 +44,7 @@ def main():
     cl = lock_control_client('tcp://nacs.nigrp.org:5633')
     val = 'wm.filename'
     #args = {'piezo':82.504}
-    cl.get(val)
+    cl.Get(val)
 
 if __name__=="__main__":
     main()

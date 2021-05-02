@@ -41,13 +41,13 @@ class lock_control_server(object):
         self.__sock.send_pyobj(result)
 
     def Get(self,name):
-        return rgetattr(self.lc, cmd)
+        return rgetattr(self.lc, name)
 
     def Set(self,name,value):
         return rsetattr(self.lc, name, value)
 
     def Call(self,name,args):
-        attr = rgetattr(self.lc, cmd)
+        attr = rgetattr(self.lc, name)
         if isinstance(args,tuple):
             result = attr(*args)
         elif isinstance(args,dict):
