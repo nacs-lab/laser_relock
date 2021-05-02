@@ -3,7 +3,7 @@
 import zmq
 from lock_control import lock_control
 
-class test_server(object):
+class lock_control_server(object):
     def recreate_sock(self):
         if self.__sock is not None:
             self.__sock.close()
@@ -28,10 +28,10 @@ class test_server(object):
         attr = getattr(self.lc, cmd)
         print(type(attr))
 
-# serv = test_server('tcp://127.0.0.1:8000')
-serv = test_server('tcp://192.168.0.110:9876')
 
 def main():
+    # serv = lock_control_server('tcp://127.0.0.1:8000')
+    serv = lock_control_server('tcp://192.168.0.110:9876')
     while True:
         try:
             serv.listen()
