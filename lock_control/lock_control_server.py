@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 '''
-hello world for zmq between raspi and pc outside lab
+zmq between raspi and pc outside lab
 server part
 '''
 
