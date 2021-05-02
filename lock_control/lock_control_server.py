@@ -26,7 +26,8 @@ class lock_control_server(object):
             return 
         cmd = self.__sock.recv_string()
         attr = getattr(self.lc, cmd)
-        attr_type = print(type(attr))
+        attr_type = type(attr)
+        print(attr_type)
         self.__sock.send_string(str(attr_type))
 
 def main():
