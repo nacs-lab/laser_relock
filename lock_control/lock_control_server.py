@@ -44,6 +44,7 @@ class lock_control_server(object):
         except Exception as inst:
             print(inst)
             attr_type = None
+            result = None
         #self.__sock.send_string(str(attr_type))
         self.__sock.send_pyobj(result)
 
