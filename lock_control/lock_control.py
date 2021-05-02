@@ -56,7 +56,7 @@ class lock_control:
             self.__owner.daq.ai.measure(continuous=continuous)
 
         def get_status(self):
-            status = self.__owner.daq.ai.get_status()
+            status,other = self.__owner.daq.ai.get_status()
             return str(status)
 
         def get_index(self):

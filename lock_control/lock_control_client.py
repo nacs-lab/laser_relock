@@ -45,7 +45,19 @@ def main():
     result = cl.Get('wm.filename')
     print(result)
 
-    result = cl.Call('errsig.measure')
+    result = cl.Call('errsig.measure',{'continuous':True})
+    print(result)
+
+    result = cl.Call('errsig.get_status')
+    print(result)
+
+    result = cl.Call('errsig.get_index')
+    print(result)
+
+    result = cl.Call('errsig.stop')
+    print(result)
+
+    result = cl.Call('errsig.get_status')
     print(result)
 
     result = cl.Call('errsig.data')
