@@ -27,6 +27,7 @@ class lock_control_server(object):
             print('timeout')
             return 
         cmd = self.__sock.recv_string()
+        args = self.__sock.recv_pyobj()
         try:
             attr = rgetattr(self.lc, cmd)
             attr_type = type(attr)
