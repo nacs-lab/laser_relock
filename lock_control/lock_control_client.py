@@ -31,8 +31,7 @@ def main():
     # cl = lock_control_client('tcp://127.0.0.1:8000')
     cl = lock_control_client('tcp://nacs.nigrp.org:5633')
     val = 'wm.read'
-    args = 20
-    cl.get(val,args)
+    cl.get(val,20,30)
 
 if __name__=="__main__":
     main()

@@ -34,8 +34,14 @@ class lock_control_server(object):
             print(attr_type)
             print('function? ',inspect.isfunction(attr))
             print(args)
+            if inspect.isfunction(attr):
+                if isinstance(args,tuple):
+                    result = attr(*args)
+                elif isinstance(args,dict):
+                    result = attr(**args)
+                print(result)
         except:
-            print('attribute does not exist')
+            print('error')
             attr_type = None
         self.__sock.send_string(str(attr_type))
 
