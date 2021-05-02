@@ -42,9 +42,11 @@ class lock_control_client(object):
 def main():
     # cl = lock_control_client('tcp://127.0.0.1:8000')
     cl = lock_control_client('tcp://nacs.nigrp.org:5633')
-    val = 'wm.filename'
-    #args = {'piezo':82.504}
-    cl.Get(val)
+    result = cl.Get('wm.filename')
+    print(result)
+
+    result = cl.Call('errsig.measure')
+    print(result)
 
 if __name__=="__main__":
     main()

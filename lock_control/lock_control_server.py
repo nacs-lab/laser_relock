@@ -33,8 +33,10 @@ class lock_control_server(object):
         if cmd=="get":
             result = self.Get(name)
         elif cmd=="set":
+            value = self.__sock.recv_pyobj()
             result = self.Set(name,value)
         elif cmd=="call":
+            args = self.__sock.recv_pyobj()    
             result = self.Call(name,args)
         else:
             result = Exception('')
