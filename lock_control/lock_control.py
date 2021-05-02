@@ -80,7 +80,7 @@ class lock_control:
             self.state = None
             self.__owner = owner        
         
-        def set(self,state=True,offs=2.5,amp=0.0,freq=100.0,rate=1000.0,
+        def set(self,state=True,offs=2.5,amp=2.5,freq=100.0,rate=1000.0,
                 tmax=1.0,channel=0):
             self.state = bool(state)
             self.__owner.daq_connect()

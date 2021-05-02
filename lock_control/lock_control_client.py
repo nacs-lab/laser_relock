@@ -40,11 +40,13 @@ class lock_control_client(object):
         return self.__sock.recv_pyobj()
 
 
-def main():   
-
+def main(): # run tests if called rather than imported
     # cl = lock_control_client('tcp://127.0.0.1:8000')
     cl = lock_control_client('tcp://nacs.nigrp.org:5633')
     result = cl.Get('wm.filename')
+    print(result)
+
+    result = cl.Call('errsig.measure',{'continuous':False})
     print(result)
 
     result = cl.Call('errsig.measure',{'continuous':True})
@@ -53,15 +55,10 @@ def main():
     result = cl.Call('errsig.get_status')
     print(result)
 
-    result = cl.Call('errsig.get_index')
-    print(result)
-
-    time.sleep(1)
-
-    result = cl.Call('errsig.get_index')
-    print(result)
-
-    time.sleep(1)
+    for i in range(3):
+        result = cl.Call('errsig.get_index')
+        print(result)
+        time.sleep(1)
 
     result = cl.Call('errsig.stop')
     print(result)
@@ -71,6 +68,18 @@ def main():
 
     result = cl.Call('errsig.data')
     print(result)
+
+    for i in range(3):
+        result = cl.Call('laser.read_current')
+        print(result)
+        result = cl.Call('laser.set_current',result + 0.0001)
+        time.sleep(1)
+
+    for i in range(3):
+        result = cl.Call('laser.read_piezo')
+        print(result)
+        result = cl.Call('laser.set_piezo',result+0.0001)
+        time.sleep(1)
 
 if __name__=="__main__":
     main()
