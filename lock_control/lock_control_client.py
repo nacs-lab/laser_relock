@@ -21,10 +21,6 @@ class lock_control_client(object):
         self.__ctx.destroy()
     def get(self,value):
         self.__sock.send_string(value)
-        timeout = 1 * 1000 # in milliseconds
-        if self.__sock.poll(timeout) == 0:
-            print('timeout')
-            return 
         val_type = self.__sock.recv_string()
         print(val_type)
 
