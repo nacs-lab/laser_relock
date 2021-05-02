@@ -2,6 +2,7 @@
 
 import zmq
 from lock_control import lock_control
+import functools
 
 class lock_control_server(object):
     def recreate_sock(self):
@@ -26,13 +27,25 @@ class lock_control_server(object):
             return 
         cmd = self.__sock.recv_string()
         try:
-            attr = getattr(self.lc, cmd)
+            attr = rgetattr(self.lc, cmd)
             attr_type = type(attr)
             print(attr_type)
         except:
             print('attribute does not exist')
             attr_type = None
         self.__sock.send_string(str(attr_type))
+
+# from https://stackoverflow.com/questions/31174295/getattr-and-setattr...
+# -on-nested-objects/31174427?noredirect=1#comment86638618_31174427
+
+def rsetattr(obj, attr, val):
+    pre, _, post = attr.rpartition('.')
+    return setattr(rgetattr(obj, pre) if pre else obj, post, val)
+
+def rgetattr(obj, attr, *args):
+    def _getattr(obj, attr):
+        return getattr(obj, attr, *args)
+    return functools.reduce(_getattr, [obj] + attr.split('.'))
 
 def main():
     # serv = lock_control_server('tcp://127.0.0.1:8000')
