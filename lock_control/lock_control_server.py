@@ -30,11 +30,11 @@ class lock_control_server(object):
             return
         cmd = self.__sock.recv_string()
         name = self.__sock.recv_string()
-        if cmd=="get"
+        if cmd=="get":
             result = self.Get(name)
-        elif cmd=="set"
+        elif cmd=="set":
             result = self.Set(name,value)
-        elif cmd=="call"
+        elif cmd=="call":
             result = self.Call(name,args)
         else:
             result = Exception('')
