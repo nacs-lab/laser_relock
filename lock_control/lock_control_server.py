@@ -32,9 +32,9 @@ class lock_control_server(object):
             attr = rgetattr(self.lc, cmd)
             attr_type = type(attr)
             print(attr_type)
-            print('function? ',inspect.isfunction(attr))
+            print('method? ',inspect.ismethod(attr))
             print(args)
-            if inspect.isfunction(attr):
+            if inspect.ismethod(attr):
                 if isinstance(args,tuple):
                     result = attr(*args)
                 elif isinstance(args,dict):
