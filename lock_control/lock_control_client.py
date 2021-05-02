@@ -32,7 +32,7 @@ class lock_control_client(object):
 def main():
     # cl = lock_control_client('tcp://127.0.0.1:8000')
     cl = lock_control_client('tcp://nacs.nigrp.org:5633')
-    val = 'daq'
+    val = 'ramp'
     cl.get(val)
 
 if __name__=="__main__":

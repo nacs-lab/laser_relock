@@ -26,8 +26,12 @@ class lock_control_server(object):
             return 
         cmd = self.__sock.recv_string()
         attr = getattr(self.lc, cmd)
-        attr_type = type(attr)
-        print(attr_type)
+        try:
+            attr_type = type(attr)
+            print(attr_type)
+        except:
+            print('attribute does not exist')
+            attr_type = None
         self.__sock.send_string(str(attr_type))
 
 def main():

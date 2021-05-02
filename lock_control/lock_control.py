@@ -19,7 +19,7 @@ import numpy as np
 # constants
 DLC_IP = '192.168.0.205'
 WM_FREQ = 472176
-WM_FILE = '/mnt/wavemeter/20210111.csv';
+WM_FILE = '/mnt/wavemeter/20210111.csv'
 DAQ_DEVICE = 0
 
 class lock_control:
