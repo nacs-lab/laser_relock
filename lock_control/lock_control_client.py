@@ -1,14 +1,6 @@
 #!/usr/bin/python
 
-'''
-hello world for zmq between raspi and pc outside lab
-server part
-'''
-
-
 import zmq
-import array
-import time 
 
 class test_client(object):
     def recreate_sock(self):
@@ -25,16 +17,8 @@ class test_client(object):
     def __del__(self):
         self.__sock.close()
         self.__ctx.destroy()
-    def recv_int(self):
-        timeout = 1 * 1000 # in milliseconds
-        if self.__sock.poll(timeout) == 0:
-            return
-        return int.from_bytes(self.__sock.recv(), byteorder = 'little')
-    def send_int(self, value):
-        return self.__sock.send(value.to_bytes(4, byteorder='little'))
-    def send_cmd(self, value):
+    def get(self):
         self.__sock.send_string(value)
-    def recv_data(self):
         timeout = 1 * 1000 # in milliseconds
         if self.__sock.poll(timeout) == 0:
             return

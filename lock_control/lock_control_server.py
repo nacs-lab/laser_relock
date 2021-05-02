@@ -1,13 +1,7 @@
 #!/usr/bin/python3
 
-'''
-zmq between raspi and pc outside lab
-server part
-'''
-
 import zmq
-import array
-import time
+from lock_control import lock_control
 
 class test_server(object):
     def recreate_sock(self):
@@ -21,33 +15,28 @@ class test_server(object):
         self.__ctx = zmq.Context()
         self.__sock = None
         self.recreate_sock()
+        self.lc = lock_control()
     def __del__(self):
         self.__sock.close()
         self.__ctx.destroy()
-    def recv_int(self):
+    def listen(self):
         timeout = 1 * 1000 # in milliseconds
         if self.__sock.poll(timeout) == 0:
-            return
-        return int.from_bytes(self.__sock.recv(), byteorder = 'little')
-    def send_int(self,val):
-        return self.__sock.send(int(val).to_bytes(4, byteorder = 'little'))
-    def recv_cmd(self):
-        timeout = 1 * 1000 # in milliseconds
-        if self.__sock.poll(timeout) == 0:
-            return
+            print('timeout')
+            return 
         cmd = self.__sock.recv_string()
-        result = getattr(foo, 'bar')()
+        attr = getattr(self.lc, cmd)
+        print(type(attr))
 
 # serv = test_server('tcp://127.0.0.1:8000')
 serv = test_server('tcp://192.168.0.110:9876')
 
-while True:
-    val = serv.recv_int()
+def main():
+    while True:
+        try:
+            serv.listen()
+        except KeyboardInterrupt:
+            break
 
-    if val==None:
-        print('timeout')
-        continue
-    
-    print(val)
-    time.sleep(0.5)
-    serv.send_int(val+1)
+if __name__=="__main__":
+    main()
