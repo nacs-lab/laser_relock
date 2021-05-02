@@ -3,7 +3,6 @@
 import zmq
 from lock_control import lock_control
 import functools
-import inspect
 
 # URL = 'tcp://127.0.0.1:8000'
 URL = 'tcp://192.168.0.110:9876'
@@ -39,21 +38,29 @@ class lock_control_server(object):
             args = self.__sock.recv_pyobj()    
             result = self.Call(name,args)
         else:
-            result = Exception('')
+            result = Exception('Command must be one of ("get","set","call")')
         self.__sock.send_pyobj(result)
-
     def Get(self,name):
-        return rgetattr(self.lc, name)
-
+        try:
+            result = rgetattr(self.lc, name)
+        except Exception as inst:
+            result = inst
+        return result
     def Set(self,name,value):
-        return rsetattr(self.lc, name, value)
-
+        try:
+            result = rsetattr(self.lc, name, value)
+        except Exception as inst:
+            result = inst
+        return result
     def Call(self,name,args):
-        attr = rgetattr(self.lc, name)
-        if isinstance(args,tuple):
-            result = attr(*args)
-        elif isinstance(args,dict):
-            result = attr(**args)
+        try:
+            attr = rgetattr(self.lc, name)
+            if isinstance(args,tuple):
+                result = attr(*args)
+            elif isinstance(args,dict):
+                result = attr(**args)
+        except Exception as inst:
+            result = inst
         return result
 
 # from https://stackoverflow.com/questions/31174295/getattr-and-setattr...

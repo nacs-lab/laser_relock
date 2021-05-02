@@ -48,5 +48,8 @@ def main():
     result = cl.Call('errsig.measure')
     print(result)
 
+    result = cl.Call('errsig.data')
+    print(result)
+
 if __name__=="__main__":
     main()

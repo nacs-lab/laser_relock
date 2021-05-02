@@ -44,7 +44,9 @@ class lock_control:
             self.__owner = owner
 
         def data(self):
-            return self.__owner.daq.ai.data
+            result = np.zeros(self.__owner.daq.ai.data.__len__())
+            result[0:] = self.__owner.daq.ai.data[0:]
+            return result
 
         def measure(self,continuous=False,tmax=0.1,rate=48000,channel=0):
             self.__owner.daq_connect()
