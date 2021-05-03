@@ -46,8 +46,8 @@ class lock_control_server(object):
     def Get(self,name):
         try:
             result = rgetattr(self.lc, name)
-            print(result)
-            print(type(result))
+            #print(result)
+            #print(type(result))
         except Exception as inst:
             result = str(inst)
         print(type(result))
