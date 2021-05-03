@@ -52,6 +52,7 @@ class lock_control_server(object):
         except Exception as inst:
             print(inst)
             result = str(inst)
+            raise inst
         return result
     def Set(self,name,value):
         try:
@@ -59,6 +60,7 @@ class lock_control_server(object):
         except Exception as inst:
             print(inst)
             result = str(inst)
+            raise inst
         return result
     def Call(self,name,args):
         try:
@@ -70,6 +72,7 @@ class lock_control_server(object):
         except Exception as inst:
             print(inst)
             result = str(inst)
+            raise inst
         return result
 
 # from https://stackoverflow.com/questions/31174295/getattr-and-setattr...
