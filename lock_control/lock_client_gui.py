@@ -104,7 +104,10 @@ class window2:
             self.client.Call('ramp.set',True)
 
     def get_ramp_amp(self):
-        return self.client.Call('ramp.set',False)
+        return self.client.Get('ramp.amp')
+
+    def set_ramp_amp(self,value):
+        return self.client.Call('ramp.set',{'amp':value})
 
     def toggle_lock(self):
         if self.lock_btn.config('text')[-1] == 'Lock':
