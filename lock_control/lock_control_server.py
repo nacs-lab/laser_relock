@@ -3,6 +3,7 @@
 import sys
 from pathlib import Path
 path = Path("pwd")
+print(path.parent.absolute())
 sys.path.append(path.parent.absolute())
 
 import zmq
