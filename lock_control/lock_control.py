@@ -84,15 +84,13 @@ class lock_control:
             self.amp = amp
             self.set(offs = self.offs, amp = self.amp)
         
-        def set(self,state=True,offs=2.5,amp=2.5,freq=100.0,rate=1000.0,
+        def set(self,state=True,freq=100.0,rate=1000.0,
                 tmax=1.0,channel=0):
             self.state = bool(state)
             self.__owner.daq_connect()
-            self.amp = amp
-            self.offs = offs
             if state:
                 t = np.arange(0,tmax,1.0/rate)
-                data = amp * signal.sawtooth(2 * np.pi * freq * t,0.5) + offs
+                data = self.amp * signal.sawtooth(2 * np.pi * freq * t,0.5) + self.offs
                 self.__owner.daq.ao.set_scan(channels=[channel],rate=rate,
                                              data=data,continuous=True)
                 self.__owner.daq.ao.run()

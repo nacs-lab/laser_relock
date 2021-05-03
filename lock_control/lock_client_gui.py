@@ -74,23 +74,23 @@ class window2:
         return self.client.Call('errsig.data')
 
     def get_wavelength(self):
-        print('get wavelength')
+        #print('get wavelength')
         return self.client.Call('wm.read')
 
     def get_current(self):
-        print('get current')
+        #print('get current')
         return self.client.Call('laser.read_current')
 
     def get_piezo(self):
-        print('get pzt')
+        #print('get pzt')
         return self.client.Call('laser.read_piezo')
 
     def set_current(self,value):
-        print('set current')
+        #print('set current')
         self.client.Call('laser.set_current',value)
 
     def set_piezo(self,value):
-        print('set pst')
+        #print('set pst')
         self.client.Call('laser.set_piezo',value)
 
     def do_nothing(self,*args):
@@ -105,14 +105,13 @@ class window2:
             self.client.Call('ramp.set',True)
 
     def get_ramp_amp(self):
-        print('get ramp amp')
+        #print('get ramp amp')
         return self.client.Get('ramp.amp')
 
     def set_ramp_amp(self,value):
-        print('set ramp amp')
-        #self.client.Set('ramp.amp',value)
-        self.client.Call('ramp.set',{'amp':value})
-        #return self.client.Call('ramp.set',{'amp':float(value)})
+        #print('set ramp amp')
+        self.client.Set('ramp.amp',value)
+        self.client.Call('ramp.set')
 
     def toggle_lock(self):
         if self.lock_btn.config('text')[-1] == 'Lock':
