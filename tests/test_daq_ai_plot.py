@@ -8,6 +8,7 @@ from mcc_daq import mcc_daq
 
 def main():
     daq = mcc_daq(0)
+    daq.connect()
     daq.ai.set_params(channels=[0],rate=48000,samples=1000,triggers=1)
     daq.ai.measure(continuous=False)
     
