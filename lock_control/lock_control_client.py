@@ -49,16 +49,22 @@ def main(): # run tests if called rather than imported
     result = cl.Call('errsig.measure',{'continuous':False})
     print(result)
 
-    result = cl.Call('errsig.measure',{'continuous':True})
-    print(result)
+    #result = cl.Call('errsig.measure',{'continuous':True})
+    #print(result)
 
     result = cl.Call('errsig.get_status')
     print(result)
 
-    for i in range(3):
-        result = cl.Call('errsig.get_index')
-        print(result)
-        time.sleep(1)
+    result = cl.Get('ramp.amp')
+    print(result)
+
+    result = cl.Get('ramp.offs')
+    print(result)
+
+#    for i in range(3):
+#        result = cl.Call('errsig.get_index')
+#        print(result)
+#        time.sleep(1)
 
     result = cl.Call('errsig.stop')
     print(result)
@@ -66,20 +72,20 @@ def main(): # run tests if called rather than imported
     result = cl.Call('errsig.get_status')
     print(result)
 
-    result = cl.Call('errsig.data')
-    print(result)
+#    result = cl.Call('errsig.data')
+#    print(result)
 
-    for i in range(3):
-        result = cl.Call('laser.read_current')
-        print(result)
-        result = cl.Call('laser.set_current',result + 0.0001)
-        time.sleep(1)
+#    for i in range(3):
+#        result = cl.Call('laser.read_current')
+#        print(result)
+#        result = cl.Call('laser.set_current',result + 0.0001)
+#        time.sleep(1)
 
-    for i in range(3):
-        result = cl.Call('laser.read_piezo')
-        print(result)
-        result = cl.Call('laser.set_piezo',result+0.0001)
-        time.sleep(1)
+#    for i in range(3):
+#        result = cl.Call('laser.read_piezo')
+#        print(result)
+#        result = cl.Call('laser.set_piezo',result+0.0001)
+#        time.sleep(1)
 
 if __name__=="__main__":
     main()
