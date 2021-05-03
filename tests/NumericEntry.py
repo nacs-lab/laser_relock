@@ -11,6 +11,10 @@ class NumericEntry(tk.Entry):
         self.getter = getter
         self.setter = setter
         self.insert(0,f'{self.getter():.4f}')
+
+    def update(self):
+        self.delete(0,tk.END)
+        self.insert(0,f'{self.getter():.4f}')
         
     def validate(self, action, index, value_if_allowed,prior_value,
                  text, validation_type, trigger_type, widget_name):

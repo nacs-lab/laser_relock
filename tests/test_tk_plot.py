@@ -43,20 +43,28 @@ class window2:
         
         
         # numeric entries
-        self.current = NumericEntry(self.root,self.panel2,self.get_current_dummy,self.set_current_dummy)
+        self.current = NumericEntry(self.root,self.panel2,self.get_current,self.set_current)
         self.current.grid(row=0,column=0)
 
-        self.piezo = NumericEntry(self.root,self.panel2,self.get_piezo_dummy,self.set_piezo_dummy)
+        self.piezo = NumericEntry(self.root,self.panel2,self.get_piezo,self.set_piezo)
         self.piezo.grid(row=1,column=0)
 
         self.wavelength = NumericEntry(self.root,self.panel2,self.get_wavelength,self.do_nothing)
-        self.wavelength.grid(row=1,column=0)
+        self.wavelength.grid(row=1,column=1)
 
-    def update_plot(self):
+        # lock & ramp buttons
+        self.ramp_btn = tk.Button(self.panel2,text="Ramp On", width=12, command=self.toggle_ramp)
+        self.ramp_btn.grid(row=0,column=2)
+
+        self.lock_btn = tk.Button(self.panel2,text="Lock", width=12, command=self.toggle_lock)
+        self.lock_btn.grid(row=1,column=2)
+
+    def update(self):
+        self.wavelength.update()
         self.errsig = self.get_errsig()
         self.line.set_ydata(self.errsig)
         self.canvas.draw()
-        self.after_id = self.root.after(self.sleepTime,self.update_plot)
+        self.after_id = self.root.after(self.sleepTime,self.update)
         
     def on_close(self,ind):
         self.root.after_cancel(self.after_id)
@@ -75,23 +83,32 @@ class window2:
     def get_piezo(self):
         return self.client.Call('laser.read_piezo')
 
-    def get_current_dummy(self):
-        return self.current_dummy
+    def set_current(self,value):
+        self.client.Call('laser.set_current',value)
 
-    def get_piezo_dummy(self):
-        return self.piezo_dummy
-
-    def set_current_dummy(self,value):
-        self.current_dummy = value
-
-    def set_piezo_dummy(self,value):
-        self.piezo_dummy = value
+    def set_piezo(self,value):
+        self.client.Call('laser.set_piezo',value)
 
     def do_nothing(self,*args):
         pass
 
+    def toggle_ramp(self):
+        if self.ramp_btn.config('text')[-1] == 'Ramp On':
+            self.ramp_btn.config(text='Ramp Off')
+            self.client.Call('ramp.set',False)
+        else:
+            self.ramp_btn.config(text='Ramp On')
+            self.client.Call('ramp.set',True)
+
+    def toggle_lock(self):
+        if self.lock_btn.config('text')[-1] == 'Lock':
+            self.lock_btn.config(text='Unlock')
+            self.client.Call('lock.set',False)
+        else:
+            self.lock_btn.config(text='Lock')
+            self.client.Call('lock.set',True)
 
 root1 = tk.Tk()
 w = window2(root1)
-w.after_id = w.root.after(w.sleepTime,w.update_plot)
+w.after_id = w.root.after(w.sleepTime,w.update)
 w.root.mainloop()
