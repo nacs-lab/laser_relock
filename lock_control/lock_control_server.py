@@ -1,11 +1,5 @@
 #!/usr/bin/python3
 
-import sys
-from pathlib import Path
-path = Path("pwd")
-print(path.parent.absolute())
-sys.path.append(path.parent.absolute())
-
 import zmq
 from lock_control import lock_control
 import functools
