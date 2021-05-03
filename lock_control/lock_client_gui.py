@@ -14,7 +14,7 @@ class window2:
         
         self.client = lock_control_client()
         self.root = master1
-        self.sleepTime = 300
+        self.sleepTime = 10
 
         self.current_dummy = self.get_current()
         self.piezo_dummy = self.get_piezo()
@@ -50,7 +50,10 @@ class window2:
         self.piezo.grid(row=1,column=0)
 
         self.wavelength = NumericEntry(self.root,self.panel2,self.get_wavelength,self.do_nothing)
-        self.wavelength.grid(row=1,column=1)
+        self.wavelength.grid(row=0,column=1)
+
+        self.ramp_amp = NumericEntry(self.root,self.panel2,self.get_ramp_amp,self.set_ramp_amp)
+        self.ramp_amp.grid(row=1,column=1)
 
         # lock & ramp buttons
         self.ramp_btn = tk.Button(self.panel2,text="Ramp On", width=12, command=self.toggle_ramp)
@@ -99,6 +102,9 @@ class window2:
         else:
             self.ramp_btn.config(text='Ramp On')
             self.client.Call('ramp.set',True)
+
+    def get_ramp_amp(self):
+        return self.client.Call('ramp.set',False)
 
     def toggle_lock(self):
         if self.lock_btn.config('text')[-1] == 'Lock':

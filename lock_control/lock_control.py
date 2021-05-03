@@ -77,9 +77,12 @@ class lock_control:
             self.__owner.daq.dio.bit_out(port,bit,state)
 
     class _ramp:
-        def __init__(self,owner):
+        def __init__(self,owner,offs=2.5,amp=2.5):
             self.state = None
-            self.__owner = owner        
+            self.__owner = owner
+            self.offs = offs
+            self.amp = amp
+            self.set(offs = self.offs, amp = self.amp)
         
         def set(self,state=True,offs=2.5,amp=2.5,freq=100.0,rate=1000.0,
                 tmax=1.0,channel=0):
