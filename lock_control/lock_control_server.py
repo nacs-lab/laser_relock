@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 
 import zmq
-from lock_control import lock_control
+# from lock_control import lock_control
+import lock_control
 import functools
 
 # URL = 'tcp://127.0.0.1:8000'
