@@ -82,7 +82,7 @@ class lock_control:
             self.__owner = owner
             self.offs = offs
             self.amp = amp
-            self.set(offs = self.offs, amp = self.amp)
+            self.set()
         
         def set(self,state=True,freq=100.0,rate=1000.0,
                 tmax=1.0,channel=0):
