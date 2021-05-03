@@ -40,6 +40,7 @@ class lock_control_server(object):
         else:
             result = Exception('Command must be one of ("get","set","call")')
         try:
+            print(type(result))
             self.__sock.send_pyobj(result)
         except:
             self.__sock.send_string('incompatible type')
@@ -50,16 +51,12 @@ class lock_control_server(object):
             #print(type(result))
         except Exception as inst:
             result = str(inst)
-        print(type(result))
-        print(result)
         return result
     def Set(self,name,value):
         try:
             result = rsetattr(self.lc, name, value)
         except Exception as inst:
             result = str(inst)
-        print(type(result))
-        print(result)
         return result
     def Call(self,name,args):
         try:
@@ -70,8 +67,6 @@ class lock_control_server(object):
                 result = attr(**args)
         except Exception as inst:
             result = str(inst)
-        print(type(result))
-        print(result)
         return result
 
 # from https://stackoverflow.com/questions/31174295/getattr-and-setattr...
