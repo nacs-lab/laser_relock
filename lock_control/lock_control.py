@@ -18,7 +18,8 @@ import numpy as np
 
 # constants
 DLC_IP = '192.168.0.205'
-WM_FREQ = 472176
+#WM_FREQ = 472176
+WM_FREQ = 288584
 WM_FILE = '/mnt/wavemeter/20210111.csv'
 DAQ_DEVICE = 0
 
@@ -101,6 +102,7 @@ class lock_control:
             now = calendar.timegm(time.localtime())
             times,freqs = self.parser.parse(self.filename,now-duration,now)
             return freqs[-1]
+
     class _laser:
         def __init__(self,dlc_ip=DLC_IP):
             self.dlc = DLCpro(NetworkConnection(dlc_ip))
