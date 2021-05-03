@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import tkinter as tk
-from package.NumericEntry import NumericEntry
+from NumericEntry import NumericEntry
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np 
