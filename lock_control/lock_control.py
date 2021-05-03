@@ -4,6 +4,11 @@
 Class for remotely controlling & relocking nacs 1.5 stirap lasers
 '''
 
+import sys
+from pathlib import Path
+path = Path("pwd")
+sys.path.append(path.parent.absolute())
+
 # reading wavemeter
 from libnacs.wavemeter import WavemeterParser
 import time,calendar
