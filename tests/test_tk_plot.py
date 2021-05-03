@@ -16,6 +16,18 @@ class window2:
         self.root = master1
         self.sleepTime = 300
 
+        self.current_dummy = self.get_current()
+        self.piezo_dummy = self.get_piezo()
+        self.wavelength_dummy = self.get_wavelength()
+
+        # upper frame with numbers & buttons
+        self.panel1 = tk.Frame(self.root)
+        self.panel1.grid()
+
+        # buttons
+        self.quit_button = tk.Button(self.panel1, text = "Quit",
+                                 command = self.panel1.quit)
+        self.quit_button.grid(column=3)
 
         # initialize plot
         self.fig = plt.figure()
@@ -29,17 +41,16 @@ class window2:
         self.panel2 = tk.Frame(self.root)
         self.panel2.grid()
         
-        # buttons
-        self.button2 = tk.Button(self.panel2, text = "Quit",
-                                 command = self.panel2.quit)
-        self.button2.grid()
         
         # numeric entries
-        self.current = NumericEntry(self.root,self.panel2,1000.0)
-        self.current.grid()
+        self.current = NumericEntry(self.root,self.panel2,self.get_current_dummy,self.set_current_dummy)
+        self.current.grid(row=0,column=0)
 
-        self.piezo = NumericEntry(self.root,self.panel2,1000.0)
-        self.piezo.grid()
+        self.piezo = NumericEntry(self.root,self.panel2,self.get_piezo_dummy,self.set_piezo_dummy)
+        self.piezo.grid(row=1,column=0)
+
+        self.wavelength = NumericEntry(self.root,self.panel2,self.get_wavelength,self.do_nothing)
+        self.wavelength.grid(row=1,column=0)
 
     def update_plot(self):
         self.errsig = self.get_errsig()
@@ -55,11 +66,29 @@ class window2:
         self.client.Call('errsig.measure')
         return self.client.Call('errsig.data')
 
+    def get_wavelength(self):
+        return self.client.Call('wm.read')
+
     def get_current(self):
         return self.client.Call('laser.read_current')
 
     def get_piezo(self):
         return self.client.Call('laser.read_piezo')
+
+    def get_current_dummy(self):
+        return self.current_dummy
+
+    def get_piezo_dummy(self):
+        return self.piezo_dummy
+
+    def set_current_dummy(self,value):
+        self.current_dummy = value
+
+    def set_piezo_dummy(self,value):
+        self.piezo_dummy = value
+
+    def do_nothing(self,*args):
+        pass
 
 
 root1 = tk.Tk()
