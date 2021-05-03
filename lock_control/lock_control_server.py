@@ -49,13 +49,17 @@ class lock_control_server(object):
             print(result)
             print(type(result))
         except Exception as inst:
-            result = inst
+            result = str(inst)
+        print(type(result))
+        print(result)
         return result
     def Set(self,name,value):
         try:
             result = rsetattr(self.lc, name, value)
         except Exception as inst:
-            result = inst
+            result = str(inst)
+        print(type(result))
+        print(result)
         return result
     def Call(self,name,args):
         try:
@@ -65,7 +69,9 @@ class lock_control_server(object):
             elif isinstance(args,dict):
                 result = attr(**args)
         except Exception as inst:
-            result = inst
+            result = str(inst)
+        print(type(result))
+        print(result)
         return result
 
 # from https://stackoverflow.com/questions/31174295/getattr-and-setattr...

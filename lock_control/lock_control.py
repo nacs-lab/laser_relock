@@ -61,7 +61,7 @@ class lock_control:
             return str(status)
 
         def get_index(self):
-            return self.__owner.daq.ai.get_index()
+            return int(self.__owner.daq.ai.get_index())
 
         def stop(self):
             self.__owner.daq.ai.stop()
@@ -96,6 +96,7 @@ class lock_control:
                 self.__owner.daq.ao.run()
             else:
                 self.__owner.daq.ao.stop()
+            return 1
             
     class _wm:
         def __init__(self,wm_freq=WM_FREQ,wm_file=WM_FILE):

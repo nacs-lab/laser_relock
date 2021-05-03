@@ -15,7 +15,7 @@ class window2:
         self.client = lock_control_client()
         self.root = master1
         self.sleepTime = 10
-        
+
         # upper frame with numbers & buttons
         self.panel1 = tk.Frame(self.root)
         self.panel1.grid()
@@ -74,18 +74,23 @@ class window2:
         return self.client.Call('errsig.data')
 
     def get_wavelength(self):
+        print('get wavelength')
         return self.client.Call('wm.read')
 
     def get_current(self):
+        print('get current')
         return self.client.Call('laser.read_current')
 
     def get_piezo(self):
+        print('get pzt')
         return self.client.Call('laser.read_piezo')
 
     def set_current(self,value):
+        print('set current')
         self.client.Call('laser.set_current',value)
 
     def set_piezo(self,value):
+        print('set pst')
         self.client.Call('laser.set_piezo',value)
 
     def do_nothing(self,*args):
@@ -100,10 +105,14 @@ class window2:
             self.client.Call('ramp.set',True)
 
     def get_ramp_amp(self):
+        print('get ramp amp')
         return self.client.Get('ramp.amp')
 
     def set_ramp_amp(self,value):
-        return self.client.Call('ramp.set',{'amp':value})
+        print('set ramp amp')
+        self.client.Set('ramp.amp',value)
+        self.client.Call('ramp.set')
+        #return self.client.Call('ramp.set',{'amp':float(value)})
 
     def toggle_lock(self):
         if self.lock_btn.config('text')[-1] == 'Lock':
