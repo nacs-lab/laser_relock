@@ -42,7 +42,7 @@ class lock_control_client(object):
 
 def main(): # run tests if called rather than imported
     # cl = lock_control_client('tcp://127.0.0.1:8000')
-    cl = lock_control_client('tcp://nacs.nigrp.org:5633')
+    cl = lock_control_client(URL)
     result = cl.Get('wm.filename')
     print(result)
 

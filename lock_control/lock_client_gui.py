@@ -15,11 +15,7 @@ class window2:
         self.client = lock_control_client()
         self.root = master1
         self.sleepTime = 10
-
-        self.current_dummy = self.get_current()
-        self.piezo_dummy = self.get_piezo()
-        self.wavelength_dummy = self.get_wavelength()
-
+        
         # upper frame with numbers & buttons
         self.panel1 = tk.Frame(self.root)
         self.panel1.grid()
