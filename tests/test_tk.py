@@ -21,8 +21,9 @@ class window2:
         self.text1.bind('<Up>', self.arrowKey)
         self.text1.bind('<Down>', self.arrowKey)
         self.text1.focus()
-        self.value = 1000
+        self.value = 1000.0
         self.text1.insert(0,self.value)
+        
     def arrowKey(self,event):
         digits = len(self.text1.get())
         dec_pos = self.text1.get().find('.')
