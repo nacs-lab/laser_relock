@@ -41,7 +41,7 @@ class lock_control:
             self.daq.daq_device.connect()
 
     class _errsig:
-        def __init__(self,owner,channel=0,tmax=0.1,rate=48000):
+        def __init__(self,owner):
             self.__owner = owner
 
         def data(self):
@@ -49,7 +49,7 @@ class lock_control:
             result[0:] = self.__owner.daq.ai.data[0:]
             return result
 
-        def measure(self,continuous=False,tmax=0.1,rate=48000,channel=0):
+        def measure(self,continuous=False,tmax=0.1,rate=4800,channel=0):
             self.__owner.daq_connect()
             samples = int(tmax * rate)
             self.__owner.daq.ai.set_params(channels=[channel],rate=rate,
