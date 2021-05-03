@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import tkinter as tk
-from NumericEntry import *
+from package.NumericEntry import NumericEntry
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np 
@@ -32,6 +32,7 @@ class window2:
         self.canvas = FigureCanvasTkAgg(self.fig,master=self.root)
         self.canvas.get_tk_widget().grid()
         self.canvas.mpl_connect('close_event', self.on_close)
+        self.ax1.set_ylim([-1, 1])
 
         # lower frame with numbers & buttons
         self.panel2 = tk.Frame(self.root)
