@@ -125,13 +125,14 @@ class mcc_daq:
             self.status = None
             
         def run(self):
-            voltage_range = 1006 # 0-5V, only one for the 1408-fs-plus
-            low_channel,high_channel,channel_count = channel_params(self.channels)
-            flags = AOutScanFlag.DEFAULT
-            sample_rate = self.ao_device.a_out_scan(low_channel, high_channel,
-                                               voltage_range, self.samples,
-                                               self.rate, self.scan_options,
-                                                    flags, self.data)
+            if not (self.get_status()==ScanStatus.RUNNING):
+                voltage_range = 1006 # 0-5V, only one for the 1408-fs-plus
+                low_channel,high_channel,channel_count = channel_params(self.channels)
+                flags = AOutScanFlag.DEFAULT
+                sample_rate = self.ao_device.a_out_scan(low_channel, high_channel,
+                                                voltage_range, self.samples,
+                                                self.rate, self.scan_options,
+                                                        flags, self.data)
 
         def stop(self):
             status = self.get_status()
