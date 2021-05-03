@@ -88,6 +88,8 @@ class lock_control:
                 tmax=1.0,channel=0):
             self.state = bool(state)
             self.__owner.daq_connect()
+            self.amp = amp
+            self.offs = offs
             if state:
                 t = np.arange(0,tmax,1.0/rate)
                 data = amp * signal.sawtooth(2 * np.pi * freq * t,0.5) + offs
@@ -96,7 +98,7 @@ class lock_control:
                 self.__owner.daq.ao.run()
             else:
                 self.__owner.daq.ao.stop()
-            return 1
+            
             
     class _wm:
         def __init__(self,wm_freq=WM_FREQ,wm_file=WM_FILE):

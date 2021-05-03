@@ -110,8 +110,8 @@ class window2:
 
     def set_ramp_amp(self,value):
         print('set ramp amp')
-        self.client.Set('ramp.amp',value)
-        self.client.Call('ramp.set')
+        #self.client.Set('ramp.amp',value)
+        self.client.Call('ramp.set',{'amp':value})
         #return self.client.Call('ramp.set',{'amp':float(value)})
 
     def toggle_lock(self):
