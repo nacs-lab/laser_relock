@@ -41,7 +41,7 @@ class mcc_daq:
             self.set_params()
 
         def set_params(self,channels=[0],samples=100,rate=48000,triggers=1,
-                range_index=2):
+                       range_index=7):
             self.channels = channels
             self.samples = samples
             self.rate = rate
@@ -67,6 +67,7 @@ class mcc_daq:
             ranges = self.ai_info.get_ranges(self.input_mode)
             flags = AInScanFlag.DEFAULT
             scan_options = (ScanOption.RETRIGGER | ScanOption.EXTTRIGGER)
+            #scan_options = (ScanOption.RETRIGGER | ScanOption.DEFAULTIO)
             if continuous:
                 scan_options = scan_options | ScanOption.CONTINUOUS
                 
@@ -110,13 +111,25 @@ class mcc_daq:
                        continuous=True):
             self.channels = channels
             self.rate = rate
-            if len(channels)>1 and (len(channels) != np.size(data,0)):
-                raise RuntimeError("size(data,0) must equal number of channels")
-            self.samples = data.size
+            #if len(channels)>1 and (len(channels) != np.size(data,0)):
+            #    raise Exception("size(data,0) must equal number of channels")
+            #self.samples = data.size
+            #print(np.shape(data))
+            #if (len(channels)==1):
+            self.samples = int(np.round(np.size(data,0)/len(channels)))
+            #else:
+            #    self.samples = int(np.round(np.size(data,1)/len(channels)))
             self.data = create_float_buffer(len(channels),self.samples)
-            for i in range(data.size):
-                self.data[i] = data[i]
-                
+            self.data[:] = data[:]
+            #print(self.samples)
+            #n = 0
+            #for i in range(self.samples):
+            #    for j in range(len(channels)):
+            #        self.data[n] = data[n]
+            #        n = n+1
+            #for i in range(data.size):
+            #    self.data[i] = data[i]
+            #print(np.shape(self.data))
             if continuous:
                 self.scan_options = ScanOption.CONTINUOUS
             else:

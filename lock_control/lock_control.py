@@ -17,8 +17,8 @@ import numpy as np
 
 # constants
 DLC_IP = '192.168.0.205'
-#WM_FREQ = 472176
-WM_FREQ = 288584
+WM_FREQ = 472166
+#WM_FREQ = 288584
 WM_FILE = '/mnt/wavemeter/20210111.csv'
 DAQ_DEVICE = 0
 
@@ -84,14 +84,20 @@ class lock_control:
             self.amp = amp
             self.set()
         
-        def set(self,state=True,freq=100.0,rate=50000.0,
-                tmax=0.1,channel=1):
+        def set(self,state=True,freq=50.0,rate=50000.0,
+                tmax=0.05,channel=1):
             self.state = bool(state)
             self.__owner.daq_connect()
             if state:
                 t = np.arange(0,tmax,1.0/rate)
-                data = self.amp * signal.sawtooth(2 * np.pi * freq * t,0.5) + self.offs
-                self.__owner.daq.ao.set_scan(channels=[channel],rate=rate,
+                data1 = self.amp * signal.sawtooth(2 * np.pi * freq * t,0.5) + self.offs
+                data0 = 2.5 * (signal.square(2 * np.pi * freq * (t-tmax/2),0.5) + 1.0)
+                data = np.concatenate((data0[:,None],data1[:,None]),axis=1)
+                data = np.reshape(data,(2*len(t),))
+                #print(len(t))
+                #print(np.shape(data))
+                #print(np.shape(data3))
+                self.__owner.daq.ao.set_scan(channels=[0,1],rate=rate,
                                              data=data,continuous=True)
                 self.__owner.daq.ao.run()
             else:
