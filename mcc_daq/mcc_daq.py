@@ -41,7 +41,7 @@ class mcc_daq:
             self.set_params()
 
         def set_params(self,channels=[0],samples=100,rate=48000,triggers=1,
-                range_index=7):
+                range_index=2):
             self.channels = channels
             self.samples = samples
             self.rate = rate
