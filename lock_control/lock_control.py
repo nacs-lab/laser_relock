@@ -70,9 +70,10 @@ class lock_control:
             self.state = None
             self.__owner = owner
             
-        def set(self,state=0,port=0,bit=0):
+        def set(self,state=0,port=1,bit=1):
             self.state = bool(state)
             self.__owner.daq_connect()
+            self.__owner.daq.dio.config_port(port,'out')
             self.__owner.daq.dio.bit_out(port,bit,state)
 
     class _ramp:
@@ -83,8 +84,8 @@ class lock_control:
             self.amp = amp
             self.set()
         
-        def set(self,state=True,freq=100.0,rate=1000.0,
-                tmax=1.0,channel=1):
+        def set(self,state=True,freq=100.0,rate=50000.0,
+                tmax=0.1,channel=1):
             self.state = bool(state)
             self.__owner.daq_connect()
             if state:
@@ -155,7 +156,7 @@ def main():
     print(piezo)
 
     print('reading wavemeter:')
-    for i in range(10):
+    for i in range(3):
         wl = lc.wm.read()
         print(wl)
         time.sleep(1)
