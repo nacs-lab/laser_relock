@@ -25,6 +25,15 @@ class window2:
         self.canvas.mpl_connect('close_event', self.on_close)
         self.ax1.set_ylim([-0.25,0.25])
 
+        # upper frame with numbers & buttons
+        self.panel1 = tk.Frame(self.root)
+        self.panel1.grid()
+
+        # buttons
+        self.quit_button = tk.Button(self.panel1, text = "Quit",
+                                 command = self.panel1.quit)
+        self.quit_button.grid(column=3)
+
         # lower frame with numbers & buttons
         self.panel2 = tk.Frame(self.root)
         self.panel2.grid()
