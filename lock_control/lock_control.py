@@ -84,7 +84,7 @@ class lock_control:
             self.set()
         
         def set(self,state=True,freq=100.0,rate=1000.0,
-                tmax=1.0,channel=0):
+                tmax=1.0,channel=1):
             self.state = bool(state)
             self.__owner.daq_connect()
             if state:
