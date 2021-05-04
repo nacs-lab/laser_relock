@@ -63,6 +63,7 @@ class lock_control_server(object):
             raise inst
         return result
     def Call(self,name,args):
+        print(name,args)
         try:
             attr = rgetattr(self.lc, name)
             if isinstance(args,tuple):
