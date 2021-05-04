@@ -32,7 +32,7 @@ class window2:
         self.canvas = FigureCanvasTkAgg(self.fig,master=self.root)
         self.canvas.get_tk_widget().grid()
         self.canvas.mpl_connect('close_event', self.on_close)
-        self.ax1.set_ylim([-5,5])
+        self.ax1.set_ylim([-1,1])
 
         # lower frame with numbers & buttons
         self.panel2 = tk.Frame(self.root)
@@ -61,9 +61,10 @@ class window2:
 
     def update(self):
         self.wavelength.update()
-        self.errsig = self.get_errsig()
-        self.line.set_ydata(self.errsig)
-        self.canvas.draw()
+        if self.ramp_btn.config('text')[-1] == 'Ramp On':
+            self.errsig = self.get_errsig()
+            self.line.set_ydata(self.errsig)
+            self.canvas.draw()
         self.after_id = self.root.after(self.sleepTime,self.update)
         
     def on_close(self,ind):
