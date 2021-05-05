@@ -4,7 +4,7 @@ import tkinter as tk
 
 class NumericEntryLabeled(tk.Frame):
     def __init__(self,root,panel,getter,setter,label='Numeric'):
-        tk.Frame.__init__(self,root)
+        tk.Frame.__init__(self,panel)
         self.label = tk.Label(self,textvariable=label)
         self.entry = NumericEntry(root,self,getter,setter)
         self.label.grid()
