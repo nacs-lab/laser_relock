@@ -6,8 +6,8 @@ class NumericEntryLabeled(tk.Frame):
     def __init__(self,root,panel,getter,setter,label='Numeric'):
         tk.Frame.__init__(self,root)
         self.label = tk.Label(self,textvariable=label)
-        self.label.pack()
         self.entry = NumericEntry(root,self,getter,setter)
+        self.label.pack()
         self.entry.pack()
         
 
