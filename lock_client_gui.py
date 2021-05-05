@@ -26,34 +26,28 @@ class window2:
         self.canvas.mpl_connect('close_event', self.on_close)
         self.ax1.set_ylim([-0.25,0.25])
 
-        ## upper frame with numbers & buttons
-        #self.panel1 = tk.Frame(self.root)
-        #self.panel1.grid()
-
-        ## buttons
-        #self.quit_button = tk.Button(self.panel1, text = "Quit",
-        #                         command = self.panel1.quit)
-        #self.quit_button.grid(column=3)
-
         # lower frame with numbers & buttons
         self.panel2 = tk.Frame(self.root)
         self.panel2.grid()
         
-        
         # numeric entries
-        self.current = NumericEntry(self.root,self.panel2,self.get_current,self.set_current)
+        self.current = NumericEntryLabeled(self.root,self.panel2,self.get_current,
+                                           self.set_current,label="Current")
         self.current.grid(row=0,column=0)
 
-        self.piezo = NumericEntry(self.root,self.panel2,self.get_piezo,self.set_piezo)
+        self.piezo = NumericEntry(self.root,self.panel2,self.get_piezo,
+                                  self.set_piezo)
         self.piezo.grid(row=1,column=0)
 
-        self.wavelength = NumericEntry(self.root,self.panel2,self.get_wavelength,self.do_nothing)
+        self.wavelength = NumericEntry(self.root,self.panel2,
+                                       self.get_wavelength,self.do_nothing)
         self.wavelength.grid(row=0,column=1)
 
-        self.ramp_amp = NumericEntry(self.root,self.panel2,self.get_ramp_amp,self.set_ramp_amp)
+        self.ramp_amp = NumericEntry(self.root,self.panel2,self.get_ramp_amp,
+                                     self.set_ramp_amp)
         self.ramp_amp.grid(row=1,column=1)
 
-        # lock & ramp buttons
+        # lock, ramp, quit buttons
         self.ramp_btn = tk.Button(self.panel2,text="Ramp On", width=12, command=self.toggle_ramp)
         self.ramp_btn.grid(row=0,column=2)
 

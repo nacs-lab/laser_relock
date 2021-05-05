@@ -2,6 +2,15 @@
 
 import tkinter as tk
 
+class NumericEntryLabeled(tk.Frame):
+    def __init__(self,root,panel,getter,setter,label='Numeric'):
+        tk.Frame.__init__(self,root)
+        self.label = Label(self.root,textvariable=label)
+        self.label.pack()
+        self.entry = NumericEntry(self.root,self,getter,setter)
+        self.entry.pack()
+        
+
 class NumericEntry(tk.Entry):
     def __init__(self,root,panel,getter,setter):
         vcmd = (root.register(self.validate),'%d','%i','%P','%s','%S','%v','%V','%W')
