@@ -10,11 +10,13 @@ class NumericEntry(tk.Entry):
         self.bind('<Down>', self.arrowKey)
         self.getter = getter
         self.setter = setter
-        self.insert(0,f'{self.getter():.4f}')
+        self.value = self.getter()
+        self.insert(0,f'{self.value:.4f}')
 
     def update(self):
+        self.value = self.getter()
         self.delete(0,tk.END)
-        self.insert(0,f'{self.getter():.4f}')
+        self.insert(0,f'{self.value:.4f}')
         
     def validate(self, action, index, value_if_allowed,prior_value,
                  text, validation_type, trigger_type, widget_name):
@@ -33,14 +35,19 @@ class NumericEntry(tk.Entry):
         digits = len(self.get())
         dec_pos = self.get().find('.')
         curs_pos = self.index(tk.INSERT)
+        old_value = self.value
         if dec_pos < 0:
-            self.setter(self.getter() + (1 if event.keysym=='Up' else -1) * (10.0**(digits-curs_pos)) )
+            new_value = old_value + (1 if event.keysym=='Up' else -1) * (10.0**(digits-curs_pos))
         else:
             if curs_pos > dec_pos:                
-                self.setter(self.getter() + (1 if event.keysym=='Up' else -1) * (10.0**(dec_pos-curs_pos+1)) )
+                new_value = old_value + ((1 if event.keysym=='Up' else -1)
+                                         * (10.0**(dec_pos-curs_pos+1)))
             else:
-                self.setter(self.getter() + (1 if event.keysym=='Up' else -1) * (10.0**(dec_pos-curs_pos)) )
-        new_digits = len(f'{self.getter():.4f}')
+                new_value = old_value + ((1 if event.keysym=='Up' else -1)
+                                         * (10.0**(dec_pos-curs_pos)))
+        self.value = new_value
+        self.setter(self.value)
+        new_digits = len(f'{new_value:.4f}')
         self.delete(0,tk.END)
-        self.insert(0,f'{self.getter():.4f}')
+        self.insert(0,f'{self.value:.4f}')
         self.icursor(curs_pos + new_digits - digits)
