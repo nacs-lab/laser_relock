@@ -14,7 +14,8 @@ class window2:
         
         self.client = lock_control_client()
         self.root = master1
-        self.sleepTime = 10
+        self.sleepTime = 50
+        self.now = time.time()
 
         # initialize plot
         self.fig = plt.figure()
@@ -60,7 +61,9 @@ class window2:
         self.lock_btn.grid(row=1,column=2)
 
     def update(self):
-        self.wavelength.update()
+        if (time.time() - self.now) > 3.0:
+            self.wavelength.update()
+            self.now = time.time()
         exttrigger = self.ramp_btn.config('text')[-1] == 'Ramp On'
         self.errsig = self.get_errsig(exttrigger=exttrigger)
         self.line.set_ydata(self.errsig)
