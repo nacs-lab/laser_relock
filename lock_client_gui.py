@@ -61,18 +61,18 @@ class window2:
 
     def update(self):
         self.wavelength.update()
-        if self.ramp_btn.config('text')[-1] == 'Ramp On':
-            self.errsig = self.get_errsig()
-            self.line.set_ydata(self.errsig)
-            self.canvas.draw()
+        exttrigger = self.ramp_btn.config('text')[-1] == 'Ramp On'
+        self.errsig = self.get_errsig(exttrigger=exttrigger)
+        self.line.set_ydata(self.errsig)
+        self.canvas.draw()
         self.after_id = self.root.after(self.sleepTime,self.update)
         
     def on_close(self,ind):
         self.root.after_cancel(self.after_id)
         sys.exit()
         
-    def get_errsig(self):
-        self.client.Call('errsig.measure')
+    def get_errsig(self,exttrigger=True):
+        self.client.Call('errsig.measure',{'exttrigger':exttrigger})
         return self.client.Call('errsig.data')
 
     def get_wavelength(self):

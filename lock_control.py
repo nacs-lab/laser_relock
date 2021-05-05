@@ -48,12 +48,13 @@ class lock_control:
             result[0:] = self.__owner.daq.ai.data[0:]
             return result
 
-        def measure(self,continuous=False,tmax=0.01,rate=48000,channel=0):
+        def measure(self,continuous=False,tmax=0.01,rate=48000,
+                    channel=0,exttrigger=True):
             self.__owner.daq_connect()
             samples = int(tmax * rate)
             self.__owner.daq.ai.set_params(channels=[channel],rate=rate,
                                            samples=samples)
-            self.__owner.daq.ai.measure(continuous=continuous)
+            self.__owner.daq.ai.measure(continuous=continuous,exttrigger=exttrigger)
 
         def get_status(self):
             status,other = self.__owner.daq.ai.get_status()

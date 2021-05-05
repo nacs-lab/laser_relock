@@ -62,12 +62,14 @@ class mcc_daq:
             self.ai_device.set_trigger(trigger_types[trigger_type_index], 0,
                                        0, 0, self.samples)
 
-        def measure(self,continuous=False):
+        def measure(self,continuous=False,exttrigger=True):
             low_channel,high_channel,channel_count = channel_params(self.channels)
             ranges = self.ai_info.get_ranges(self.input_mode)
             flags = AInScanFlag.DEFAULT
-            scan_options = (ScanOption.RETRIGGER | ScanOption.EXTTRIGGER)
-            #scan_options = (ScanOption.RETRIGGER | ScanOption.DEFAULTIO)
+            if exttrigger:
+                scan_options = (ScanOption.RETRIGGER | ScanOption.EXTTRIGGER)
+            else:
+                scan_options = ScanOption.DEFAULTIO
             if continuous:
                 scan_options = scan_options | ScanOption.CONTINUOUS
                 
