@@ -24,7 +24,7 @@ class NumericEntry(tk.Entry):
             return False
         elif value_if_allowed:
             try:
-                self.setter(float(value_if_allowed))
+                #self.setter(float(value_if_allowed))
                 return True
             except ValueError:
                 return False 
