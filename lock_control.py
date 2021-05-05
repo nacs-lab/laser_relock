@@ -129,7 +129,7 @@ class lock_control:
             with self.dlc as dlc:
                 if current:
                     dlc.laser1.dl.cc.current_set.set(current)
-            return self.read_current()
+            #return self.read_current()
         
         def read_piezo(self):
             with self.dlc as dlc:
@@ -140,7 +140,7 @@ class lock_control:
             with self.dlc as dlc:
                 if piezo:
                     dlc.laser1.dl.pc.voltage_set.set(piezo)
-            return self.read_piezo()
+            #return self.read_piezo()
     
 
 def main():
