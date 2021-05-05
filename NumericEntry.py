@@ -8,7 +8,7 @@ class NumericEntryLabeled(tk.Frame):
         self.label = tk.Label(self,text=label)
         self.entry = NumericEntry(root,self,getter,setter)
         self.label.grid(row=0,column=0)
-        self.entry.grid(row=1,column=0)
+        self.entry.grid(row=0,column=1)
         
 
 class NumericEntry(tk.Entry):

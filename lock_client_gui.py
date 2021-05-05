@@ -35,17 +35,17 @@ class window2:
                                            self.set_current,label="Current")
         self.current.grid(row=0,column=0)
 
-        self.piezo = NumericEntry(self.root,self.panel2,self.get_piezo,
-                                  self.set_piezo)
+        self.piezo = NumericEntryLabeled(self.root,self.panel2,self.get_piezo,
+                                         self.set_piezo,label="Piezo")
         self.piezo.grid(row=1,column=0)
 
-        self.wavelength = NumericEntry(self.root,self.panel2,
-                                       self.get_wavelength,self.do_nothing)
+        self.wavelength = NumericEntryLabeled(self.root,self.panel2,
+                                              self.get_wavelength,self.do_nothing,label="Freq")
         self.wavelength.grid(row=0,column=1)
 
-        self.ramp_amp = NumericEntry(self.root,self.panel2,self.get_ramp_amp,
+        self.ramp_amp = NumericEntryLabeled(self.root,self.panel2,self.get_ramp_amp,
                                      self.set_ramp_amp)
-        self.ramp_amp.grid(row=1,column=1)
+        self.ramp_amp.grid(row=1,column=1,Label="RampAmp")
 
         # lock, ramp, quit buttons
         self.ramp_btn = tk.Button(self.panel2,text="Ramp On", width=12, command=self.toggle_ramp)
