@@ -26,14 +26,14 @@ class window2:
         self.canvas.mpl_connect('close_event', self.on_close)
         self.ax1.set_ylim([-0.25,0.25])
 
-        # upper frame with numbers & buttons
-        self.panel1 = tk.Frame(self.root)
-        self.panel1.grid()
+        ## upper frame with numbers & buttons
+        #self.panel1 = tk.Frame(self.root)
+        #self.panel1.grid()
 
-        # buttons
-        self.quit_button = tk.Button(self.panel1, text = "Quit",
-                                 command = self.panel1.quit)
-        self.quit_button.grid(column=3)
+        ## buttons
+        #self.quit_button = tk.Button(self.panel1, text = "Quit",
+        #                         command = self.panel1.quit)
+        #self.quit_button.grid(column=3)
 
         # lower frame with numbers & buttons
         self.panel2 = tk.Frame(self.root)
@@ -60,6 +60,11 @@ class window2:
         self.lock_btn = tk.Button(self.panel2,text="Lock", width=12, command=self.toggle_lock)
         self.lock_btn.grid(row=1,column=2)
 
+        self.quit_button = tk.Button(self.panel2, text = "Quit",
+                                 command = self.panel2.quit)
+        self.quit_button.grid(row=0,column=3)
+
+        
     def update(self):
         if (time.time() - self.now) > 3.0:
             self.wavelength.update()
