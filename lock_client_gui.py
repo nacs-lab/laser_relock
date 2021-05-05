@@ -44,8 +44,8 @@ class window2:
         self.wavelength.grid(row=0,column=1)
 
         self.ramp_amp = NumericEntryLabeled(self.root,self.panel2,self.get_ramp_amp,
-                                     self.set_ramp_amp)
-        self.ramp_amp.grid(row=1,column=1,Label="RampAmp")
+                                     self.set_ramp_amp,Label="RampAmp")
+        self.ramp_amp.grid(row=1,column=1)
 
         # lock, ramp, quit buttons
         self.ramp_btn = tk.Button(self.panel2,text="Ramp On", width=12, command=self.toggle_ramp)
