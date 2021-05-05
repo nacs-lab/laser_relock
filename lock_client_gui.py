@@ -14,7 +14,7 @@ class window2:
         
         self.client = lock_control_client()
         self.root = master1
-        self.sleepTime = 50
+        self.sleepTime = 10
         self.now = time.time()
 
         # initialize plot
