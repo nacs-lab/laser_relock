@@ -112,7 +112,11 @@ class lock_control:
         def read(self,duration=20):
             now = calendar.timegm(time.localtime())
             times,freqs = self.parser.parse(self.filename,now-duration,now)
-            return freqs[-1]
+            try:
+                result = freqs[-1]
+            except IndexError:
+                result = -1
+            return result
 
     class _laser:
         def __init__(self,dlc_ip=DLC_IP):
