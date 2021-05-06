@@ -100,7 +100,7 @@ class lock_control:
                 self.__owner.daq.ao.run()
             else:
                 self.__owner.daq.ao.stop()
-                self.__owner.daq.ao.set_single(channels=[0,1],value=[2.5,2.5])
+                self.__owner.daq.ao.set_single(channel=[0,1],value=[2.5,2.5])
             
             
     class _wm:
