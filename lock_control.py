@@ -71,7 +71,7 @@ class lock_control:
             self.state = None
             self.__owner = owner
             
-        def set(self,state=0,port=1,bit=1):
+        def set(self,state=0,port=1,bit=0):
             self.state = bool(state)
             self.__owner.daq_connect()
             self.__owner.daq.dio.config_port(port,'out')
