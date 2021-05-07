@@ -121,6 +121,7 @@ class lock_control:
                 result = freqs[-1]
             except IndexError:
                 result = -1
+            print(result)
             return result
 
     class _laser:

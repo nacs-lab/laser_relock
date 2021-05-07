@@ -65,7 +65,7 @@ class lock_control_server(object):
             raise inst
         return result
     def Call(self,name,args):
-        print(name,args)
+        #print(name,args)
         try:
             attr = rgetattr(self.lc, name)
             if isinstance(args,tuple):
@@ -76,7 +76,7 @@ class lock_control_server(object):
             print(inst)
             result = str(inst)
             raise inst
-        print(result)
+        #print(result)
         return result
 
 # from https://stackoverflow.com/questions/31174295/getattr-and-setattr...
