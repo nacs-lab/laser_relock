@@ -97,7 +97,6 @@ class lock_control:
             #    amp1 = 0.0
 
             amp1 = self.amp
-            amp0 = 2.5
             t = np.arange(0,tmax,1.0/rate)
             if state:        
                 
@@ -105,7 +104,7 @@ class lock_control:
                 data1 = amp1 * signal.sawtooth(2 * np.pi * freq * t,0.5) + amp1
             else:
                 data1 = 0.0 * t
-            data0 = 2.5 * (amp0*signal.square(2 * np.pi * freq * (t),0.5) + 1.0)
+            data0 = 2.5 * (signal.square(2 * np.pi * freq * (t),0.5) + 1.0)
                 
             data = np.concatenate((data0[:,None],data1[:,None]),axis=1)
             data = np.reshape(data,(2*len(t),))
