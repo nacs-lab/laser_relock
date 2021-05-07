@@ -60,9 +60,10 @@ class window2:
 
         
     def update(self):
-        if (time.time() - self.now) > 3.0:
+        #print(time.time()-self.now)
+        if (time.time() - self.now) > 1.0:
             #print('update wl')
-            self.wavelength.update()
+            self.wavelength.entry.update()
             self.now = time.time()
         exttrigger = self.ramp_btn.config('text')[-1] == 'Ramp On'
         self.errsig = self.get_errsig(exttrigger=exttrigger)
@@ -97,6 +98,7 @@ class window2:
     def set_piezo(self,value):
         #print('set pst')
         self.client.Call('laser.set_piezo',value)
+        self.current.entry.update()
 
     def do_nothing(self,*args):
         pass

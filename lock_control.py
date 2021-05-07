@@ -101,8 +101,8 @@ class lock_control:
             t = np.arange(0,tmax,1.0/rate)
             if state:        
                 
-                data1 = amp1 * signal.sawtooth(2 * np.pi * freq * t,0.5) + self.offs
-                
+                #data1 = amp1 * signal.sawtooth(2 * np.pi * freq * t,0.5) + self.offs
+                data1 = amp1 * signal.sawtooth(2 * np.pi * freq * t,0.5) + amp1
             else:
                 data1 = 0.0 * t
             data0 = 2.5 * (amp0*signal.square(2 * np.pi * freq * (t),0.5) + 1.0)
