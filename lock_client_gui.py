@@ -61,6 +61,7 @@ class window2:
         
     def update(self):
         if (time.time() - self.now) > 3.0:
+            #print('update wl')
             self.wavelength.update()
             self.now = time.time()
         exttrigger = self.ramp_btn.config('text')[-1] == 'Ramp On'
