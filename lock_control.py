@@ -91,22 +91,29 @@ class lock_control:
             self.__owner.daq_connect()
 
             
-            if state:
-                amp1 = self.amp
-            else:
-                amp1 = 0.0
+            #if state:
+            #    amp1 = self.amp
+            #else:
+            #    amp1 = 0.0
 
-            amp0 = 2.5    
+            amp1 = 2.5
+            amp0 = 2.5
             t = np.arange(0,tmax,1.0/rate)
-            data1 = amp1 * signal.sawtooth(2 * np.pi * freq * t,0.5) + self.offs
+            if state:        
+                
+                data1 = amp1 * signal.sawtooth(2 * np.pi * freq * t,0.5) + self.offs
+                
+            else:
+                data1 = 0.0 * t
             data0 = 2.5 * (amp0*signal.square(2 * np.pi * freq * (t),0.5) + 1.0)
+                
             data = np.concatenate((data0[:,None],data1[:,None]),axis=1)
             data = np.reshape(data,(2*len(t),))
+                
             self.__owner.daq.ao.stop()
             self.__owner.daq.ao.set_scan(channels=[0,1],rate=rate,
                                          data=data,continuous=True)
             self.__owner.daq.ao.run()
-            
 
             
             
