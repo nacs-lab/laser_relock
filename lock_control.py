@@ -78,7 +78,7 @@ class lock_control:
             self.__owner.daq.dio.bit_out(port,bit,state)
 
     class _ramp:
-        def __init__(self,owner,offs=2.5,amp=2.5):
+        def __init__(self,owner,offs=2.5,amp=0.1):
             self.state = None
             self.__owner = owner
             self.offs = offs
@@ -96,7 +96,7 @@ class lock_control:
             #else:
             #    amp1 = 0.0
 
-            amp1 = 2.5
+            amp1 = self.amp
             amp0 = 2.5
             t = np.arange(0,tmax,1.0/rate)
             if state:        
