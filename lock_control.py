@@ -8,7 +8,7 @@ from libnacs.wavemeter import WavemeterParser
 import time,calendar
 
 # toptica laser control
-from toptica.lasersdk.dlcpro.v2_1_0 import DLCpro, NetworkConnection
+from toptica_laser import toptica_laser
 
 # mcc daq control
 from mcc_daq import mcc_daq
@@ -16,7 +16,6 @@ from scipy import signal
 import numpy as np
 
 # constants
-DLC_IP = '192.168.0.205'
 WM_FREQ = 472166
 #WM_FREQ = 288584
 WM_FILE = '/mnt/wavemeter/20210111.csv'
@@ -24,7 +23,7 @@ DAQ_DEVICE = 0
 
 class lock_control:
     def __init__(self,daq_device = DAQ_DEVICE):
-        self.laser = self._laser()
+        self.laser = toptica_laser()
         self.daq = mcc_daq(0)
         self.wm = self._wm()
         self.lock = self._lock(self)
@@ -129,33 +128,6 @@ class lock_control:
                 result = -1
             print(result)
             return result
-
-    class _laser:
-        def __init__(self,dlc_ip=DLC_IP):
-            self.dlc = DLCpro(NetworkConnection(dlc_ip))
-            self.current = self.read_current()
-            self.piezo = self.read_piezo()
-            
-        def read_current(self):
-            with self.dlc as dlc:
-                self.current = dlc.laser1.dl.cc.current_set.get()
-            return self.current
-        
-        def set_current(self,current):
-            with self.dlc as dlc:
-                if current:
-                    dlc.laser1.dl.cc.current_set.set(current)
-        
-        def read_piezo(self):
-            with self.dlc as dlc:
-                self.piezo_voltage = dlc.laser1.dl.pc.voltage_set.get()
-            return self.piezo_voltage
-        
-        def set_piezo(self,piezo):
-            with self.dlc as dlc:
-                if piezo:
-                    dlc.laser1.dl.pc.voltage_set.set(piezo)
-    
 
 def main():
     lc = lock_control()
