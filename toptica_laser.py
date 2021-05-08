@@ -1,6 +1,8 @@
 # toptica laser control
 from toptica.lasersdk.dlcpro.v2_1_0 import DLCpro, NetworkConnection
 
+DLC_IP = '192.168.0.205'
+
 class toptica_laser:
         def __init__(self,dlc_ip=DLC_IP):
             self.dlc = DLCpro(NetworkConnection(dlc_ip))
