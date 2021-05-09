@@ -110,32 +110,18 @@ class mcc_daq:
             self.set_scan()
 
         def set_scan(self,channels=[0],rate=0,data=np.zeros(1),
-                       continuous=True):
+                       continuous=False,exttrigger=True):
             self.channels = channels
             self.rate = rate
-            #if len(channels)>1 and (len(channels) != np.size(data,0)):
-            #    raise Exception("size(data,0) must equal number of channels")
-            #self.samples = data.size
-            #print(np.shape(data))
-            #if (len(channels)==1):
             self.samples = int(np.round(np.size(data,0)/len(channels)))
-            #else:
-            #    self.samples = int(np.round(np.size(data,1)/len(channels)))
             self.data = create_float_buffer(len(channels),self.samples)
             self.data[:] = data[:]
-            #print(self.samples)
-            #n = 0
-            #for i in range(self.samples):
-            #    for j in range(len(channels)):
-            #        self.data[n] = data[n]
-            #        n = n+1
-            #for i in range(data.size):
-            #    self.data[i] = data[i]
-            #print(np.shape(self.data))
-            if continuous:
-                self.scan_options = ScanOption.CONTINUOUS
+            if exttrigger:
+                self.scan_options = (ScanOption.RETRIGGER | ScanOption.EXTTRIGGER)
             else:
-                self.scan_options = ScanOption.SINGLEIO
+                self.scan_options = ScanOption.DEFAULTIO
+            if continuous:
+                self.scan_options = self.scan_options | ScanOption.CONTINUOUS
                 
             self.status = None
             
