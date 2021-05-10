@@ -25,6 +25,7 @@ class lock_control:
     def __init__(self,daq_device = DAQ_DEVICE,wm_freq=WM_FREQ,wm_file=WM_FILE):
         self.laser = toptica_laser()
         self.daq = mcc_daq(0)
+        self.ramp_amp = 0.0
         self.wm_parser = WavemeterParser(wm_freq-1000,wm_freq+1000)
         self.wm_filename = wm_file
 
@@ -71,7 +72,7 @@ class lock_control:
         self.state = bool(state)
         self.daq_connect()
 
-        amp1 = self.amp
+        amp1 = self.ramp_amp
         t = np.arange(0,tmax,1.0/rate)
         if state:
             data1 = amp1 * signal.sawtooth(2 * np.pi * freq * t,0.5) + amp1
@@ -138,7 +139,6 @@ def main():
     print('not ramping:')
     lc.ramp_set(0)
     time.sleep(1)
-
     
     
 if __name__=="__main__":
