@@ -25,10 +25,6 @@ class lock_control:
     def __init__(self,daq_device = DAQ_DEVICE,wm_freq=WM_FREQ,wm_file=WM_FILE):
         self.laser = toptica_laser()
         self.daq = mcc_daq(0)
-        self.wm = self._wm()
-        self.lock = self._lock(self)
-        self.ramp = self._ramp(self)
-        self.errsig = self._errsig(self)
         self.wm_parser = WavemeterParser(wm_freq-1000,wm_freq+1000)
         self.wm_filename = wm_file
 
@@ -53,7 +49,7 @@ class lock_control:
                                         samples=samples)
         self.daq.ai.measure(continuous=continuous,exttrigger=exttrigger)
 
-    def errsig_status(self):
+    def errsig_get_status(self):
         status,other = self.daq.ai.get_status()
         return str(status)
 
@@ -64,7 +60,7 @@ class lock_control:
         self.daq.ai.stop()
         
             
-    def lock(self,state=0,port=1,bit=0):
+    def lock_set(self,state=0,port=1,bit=0):
         self.state = bool(state)
         self.daq_connect()
         self.daq.dio.config_port(port,'out')
@@ -122,25 +118,25 @@ def main():
 
     print('reading wavemeter:')
     for i in range(3):
-        wl = lc.wm.read()
+        wl = lc.wm_read()
         print(wl)
         time.sleep(1)
 
     print('engaging lock:')
-    lc.lock.set(1)
+    lc.lock_set(1)
     time.sleep(1)
 
     print('disengaging lock')
-    lc.lock.set(0)
+    lc.lock_set(0)
 
     print('ramping:')
-    lc.ramp.set(1)
+    lc.ramp_set(1)
 
     print('measuring error signal:')
 #    lc.errsig.measure
     
     print('not ramping:')
-    lc.ramp.set(0)
+    lc.ramp_set(0)
     time.sleep(1)
 
     

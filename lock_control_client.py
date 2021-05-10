@@ -43,16 +43,16 @@ class lock_control_client(object):
 def main(): # run tests if called rather than imported
     # cl = lock_control_client('tcp://127.0.0.1:8000')
     cl = lock_control_client(URL)
-    result = cl.Get('wm.filename')
+    result = cl.Get('wm_filename')
     print(result)
 
-    result = cl.Call('errsig.measure',{'continuous':False})
+    result = cl.Call('errsig_measure',{'continuous':False})
     print(result)
 
     #result = cl.Call('errsig.measure',{'continuous':True})
     #print(result)
 
-    result = cl.Call('errsig.get_status')
+    result = cl.Call('errsig_get_status')
     print(result)
 
     result = cl.Get('ramp.amp')

@@ -47,16 +47,12 @@ class lock_control_server(object):
     def Get(self,name):
         try:
             result = rgetattr(self.lc, name)
-            #print(result)
-            #print(type(result))
         except Exception as inst:
             print(inst)
             result = str(inst)
             raise inst
-        #print(name,result)
         return result
     def Set(self,name,value):
-        #print(name,value)
         try:
             result = rsetattr(self.lc, name, value)
         except Exception as inst:
@@ -65,7 +61,6 @@ class lock_control_server(object):
             raise inst
         return result
     def Call(self,name,args):
-        #print(name,args)
         try:
             attr = rgetattr(self.lc, name)
             if isinstance(args,tuple):
@@ -76,7 +71,6 @@ class lock_control_server(object):
             print(inst)
             result = str(inst)
             raise inst
-        #print(result)
         return result
 
 # from https://stackoverflow.com/questions/31174295/getattr-and-setattr...
