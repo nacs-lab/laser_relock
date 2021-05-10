@@ -26,6 +26,7 @@ class lock_control:
         self.laser = toptica_laser()
         self.daq = mcc_daq(0)
         self.ramp_amp = 0.0
+        self.lock_state = None
         self.wm_parser = WavemeterParser(wm_freq-1000,wm_freq+1000)
         self.wm_filename = wm_file
 
@@ -62,14 +63,14 @@ class lock_control:
         
             
     def lock_set(self,state=0,port=1,bit=0):
-        self.state = bool(state)
+        self.lock_state = bool(state)
         self.daq_connect()
         self.daq.dio.config_port(port,'out')
         self.daq.dio.bit_out(port,bit,state)
         
     def ramp_set(self,state=True,freq=50.0,rate=50000.0,
             tmax=0.05,channel=1):
-        self.state = bool(state)
+        self.lock_state = bool(state)
         self.daq_connect()
 
         amp1 = self.ramp_amp
@@ -106,16 +107,14 @@ def main():
     print(current)
 
     print('setting current')
-    current = lc.laser.set_current(current + 0.0001)
-    print(current)
+    lc.laser.set_current(current + 0.0001)
     
     print('reading piezo:')
     piezo = lc.laser.read_piezo()
     print(piezo)
 
     print('setting piezo:')
-    piezo = lc.laser.set_piezo(piezo + 0.00001)
-    print(piezo)
+    lc.laser.set_piezo(piezo + 0.00001)
 
     print('reading wavemeter:')
     for i in range(3):
