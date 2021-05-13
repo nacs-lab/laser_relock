@@ -26,7 +26,7 @@ DAQ_DEVICE = 0
 class lock_control:
     def __init__(self,daq_device = DAQ_DEVICE):
         self.laser = toptica_laser()
-        self.daq = mcc_daq(0)
+        self.daq = mcc_daq(daq_device)
         self.wm = self._wm()
         self.lock = self._lock(self)
         self.ramp = self._ramp(self)
