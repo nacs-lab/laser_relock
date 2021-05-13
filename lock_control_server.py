@@ -5,7 +5,7 @@ from lock_control import lock_control
 import functools
 
 # URL = 'tcp://127.0.0.1:8000'
-URL = 'tcp://192.168.0.107:9876'
+URL = 'tcp://192.168.0.105:9876'
 
 class lock_control_server(object):
     def recreate_sock(self):
