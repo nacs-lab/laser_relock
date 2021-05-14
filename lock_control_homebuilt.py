@@ -20,9 +20,10 @@ WM_FILE = '/mnt/wavemeter/20210111.csv'
 DAQ_DEVICE = 1
 
 class lock_control:
-    def __init__(self,daq_device = DAQ_DEVICE):
+    def __init__(self,daq_device = DAQ_DEVICE,wm_freq=WM_FREQ,wm_file=WM_FILE):
         self.daq = mcc_daq(daq_device)
-        self.wm = WavemeterParser(wm_freq-1000,wm_freq+1000)
+        self.wm_parser = WavemeterParser(wm_freq-1000,wm_freq+1000)
+        self.wm_file = wm_file
 
     def daq_connect(self):
         if not self.daq.daq_device.is_connected():
@@ -60,7 +61,7 @@ class lock_control:
     def ramp_set(self,state=True,freq=50.0,rate=50000.0,
             tmax=0.05,channel=1):
         self.state = bool(state)
-        self.__owner.daq_connect()
+        self.daq_connect()
 
         amp1 = self.amp
         t = np.arange(0,tmax,1.0/rate)
@@ -73,14 +74,14 @@ class lock_control:
         data = np.concatenate((data0[:,None],data1[:,None]),axis=1)
         data = np.reshape(data,(2*len(t),))
             
-        self.__owner.daq.ao.stop()
-        self.__owner.daq.ao.set_scan(channels=[0,1],rate=rate,
+        self.daq.ao.stop()
+        self.daq.ao.set_scan(channels=[0,1],rate=rate,
                                         data=data,continuous=True)
-        self.__owner.daq.ao.run()
+        self.daq.ao.run()
         
     def wm_read(self,duration=20):
         now = calendar.timegm(time.localtime())
-        times,freqs = self.parser.parse(self.filename,now-duration,now)
+        times,freqs = self.wm_parser.parse(self.filename,now-duration,now)
         try:
             result = freqs[-1]
         except IndexError:
