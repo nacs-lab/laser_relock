@@ -30,10 +30,6 @@ class lock_control:
         self.ramp = self._ramp(self)
         self.errsig = self._errsig(self)
 
-    def delete(self):
-        if self.daq.daq_device.is_connected():
-            self.daq.disconnect()
-
     def daq_connect(self):
         if not self.daq.daq_device.is_connected():
             self.daq.daq_device.connect()
