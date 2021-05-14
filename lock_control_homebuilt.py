@@ -81,7 +81,7 @@ class lock_control:
         
     def wm_read(self,duration=20):
         now = calendar.timegm(time.localtime())
-        times,freqs = self.wm_parser.parse(self.filename,now-duration,now)
+        times,freqs = self.wm_parser.parse(self.wm_file,now-duration,now)
         try:
             result = freqs[-1]
         except IndexError:
@@ -110,19 +110,19 @@ def main():
 
     print('reading wavemeter:')
     for i in range(3):
-        wl = lc.wm.read()
+        wl = lc.wm_read()
         print(wl)
         time.sleep(1)
 
     print('engaging lock:')
-    lc.lock.set(1)
+    lc.lock_set(1)
     time.sleep(1)
 
     print('disengaging lock')
-    lc.lock.set(0)
+    lc.lock_set(0)
 
     print('ramping:')
-    lc.ramp.set(1)
+    lc.ramp_set(1)
 
     print('measuring error signal:')
 #    lc.errsig.measure

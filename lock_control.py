@@ -3,6 +3,7 @@
 '''
 Class for remotely controlling & relocking nacs 1.5 stirap lasers
 '''
+
 # reading wavemeter
 from libnacs.wavemeter import WavemeterParser
 import time,calendar
@@ -22,48 +23,36 @@ WM_FILE = '/mnt/wavemeter/20210111.csv'
 DAQ_DEVICE = 0
 
 class lock_control:
-    def __init__(self,daq_device = DAQ_DEVICE):
+    def __init__(self,daq_device = DAQ_DEVICE,wm_freq=WM_FREQ,wm_file=WM_FILE):
         self.laser = toptica_laser()
         self.daq = mcc_daq(daq_device)
-        self.wm = self._wm()
-        self.lock = self._lock(self)
-        self.ramp = self._ramp(self)
-        self.errsig = self._errsig(self)
-
-    def delete(self):
-        if self.daq.daq_device.is_connected():
-            self.daq.disconnect()
 
     def daq_connect(self):
         if not self.daq.daq_device.is_connected():
             self.daq.daq_device.connect()
 
-    class _errsig:
-        def __init__(self,owner):
-            self.__owner = owner
+    def errsig_data(self):
+        result = np.zeros(self.daq.ai.data.__len__())
+        result[0:] = self.daq.ai.data[0:]
+        return result
 
-        def data(self):
-            result = np.zeros(self.__owner.daq.ai.data.__len__())
-            result[0:] = self.__owner.daq.ai.data[0:]
-            return result
+    def errsig_measure(self,continuous=False,tmax=0.01,rate=48000,
+                channel=0,exttrigger=True):
+        self.daq_connect()
+        samples = int(tmax * rate)
+        self.daq.ai.set_params(channels=[channel],rate=rate,
+                                        samples=samples)
+        self.daq.ai.measure(continuous=continuous,exttrigger=exttrigger)
 
-        def measure(self,continuous=False,tmax=0.01,rate=48000,
-                    channel=0,exttrigger=True):
-            self.__owner.daq_connect()
-            samples = int(tmax * rate)
-            self.__owner.daq.ai.set_params(channels=[channel],rate=rate,
-                                           samples=samples)
-            self.__owner.daq.ai.measure(continuous=continuous,exttrigger=exttrigger)
+    def errsig_get_status(self):
+        status,other = self.daq.ai.get_status()
+        return str(status)
 
-        def get_status(self):
-            status,other = self.__owner.daq.ai.get_status()
-            return str(status)
+    def errsig_get_index(self):
+        return int(self.daq.ai.get_index())
 
-        def get_index(self):
-            return int(self.__owner.daq.ai.get_index())
-
-        def stop(self):
-            self.__owner.daq.ai.stop()
+    def errsig_stop(self):
+        self.daq.ai.stop()
         
     class _lock:
         def __init__(self,owner):
