@@ -19,7 +19,7 @@ import numpy as np
 WM_FREQ = 472166
 #WM_FREQ = 288584
 WM_FILE = '/mnt/wavemeter/20210111.csv'
-DAQ_DEVICE = 0
+DAQ_DEVICE = 1
 
 class lock_control:
     def __init__(self,daq_device = DAQ_DEVICE):
