@@ -17,21 +17,19 @@ from mcc_daq import mcc_daq
 from scipy import signal
 import numpy as np
 
-# constants
-WM_FREQ = 472166
-#WM_FREQ = 288584
-WM_FILE = '/mnt/wavemeter/20210111.csv'
-DAQ_DEVICE = 0
+import laser_settings
 
 class lock_control:
-    def __init__(self,toptica_boo=True,daq_device = DAQ_DEVICE,wm_freq=WM_FREQ,wm_file=WM_FILE):
-        if toptica_boo:
+    def __init__(self,laser_name="pump"):
+        self.settings = getattr(laser_settings,laser_name)
+        if (self.settings.laser_name == 'toptica'):
             self.laser = toptica_laser()
-        else:
+        elif (self.settings.laser_name == 'homebuilt'):
             self.laser = homebuilt_laser()
-        self.daq = mcc_daq(daq_device)
-        self.parser = WavemeterParser(wm_freq-1000,wm_freq+1000)
-        self.wm_file = wm_file
+        else:
+            raise Exception("not a known laser type")
+        self.daq = mcc_daq(self.settings.daq_device)
+        self.parser = WavemeterParser(self.settings.wm_freq-1000,self.settings.wm_freq+1000)
 
     def daq_connect(self):
         if not self.daq.daq_device.is_connected():
