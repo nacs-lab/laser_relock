@@ -4,7 +4,6 @@ import tkinter as tk
 from NumericEntry import *
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import numpy as np 
 import sys
 from lock_control_client import lock_control_client
 import time

@@ -4,7 +4,8 @@ stokes = {
     'laser_type' : 'toptica',
     'wm_freq' : 472166,
     'wm_file' : '/mnt/wavemeter/20210111.csv',
-    'daq_device' : 0
+    'daq_device' : 0,
+    'dlc_ip' : '192.168.0.205'
 }
 
 pump = {
