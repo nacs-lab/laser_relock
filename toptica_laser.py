@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 # toptica laser control
 from toptica.lasersdk.dlcpro.v2_1_0 import DLCpro, NetworkConnection
 
