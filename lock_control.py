@@ -10,6 +10,7 @@ import time,calendar
 
 # toptica laser control
 from toptica_laser import toptica_laser
+from homebuilt_laser import homebuilt_laser
 
 # mcc daq control
 from mcc_daq import mcc_daq
