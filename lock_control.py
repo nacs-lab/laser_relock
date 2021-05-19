@@ -18,15 +18,13 @@ from scipy import signal
 import numpy as np
 
 # setting
-import laser_settings
-ERRSIG_SAMPLE_RATE = 48000
-RAMP_SAMPLE_RATE = 50000
-RAMP_AMP = 0.1
-RAMP_OFFS = 0.0
+import lock_control_settings as settings
 
 class lock_control:
     def __init__(self,laser_name="pump"):
-        self.settings = getattr(laser_settings,laser_name)
+
+        self.settings = getattr(settings,laser_name)
+        
         if (self.settings['laser_type'] == 'toptica'):
             self.laser = toptica_laser(self.settings['dlc_ip'])
         elif (self.settings['laser_type'] == 'homebuilt'):
@@ -34,8 +32,10 @@ class lock_control:
                                          self.settings['product'])
         else:
             raise Exception("not a known laser type")
+        
         self.daq = mcc_daq(self.settings['daq_device'])
-        self.wm_parser = WavemeterParser(self.settings['wm_freq']-1000,self.settings['wm_freq']+1000)
+        self.wm_parser = WavemeterParser(self.settings['wm_freq']-1000,
+                                         self.settings['wm_freq']+1000)
         self.lock_state = None
         self.ramp_state = None
         self.ramp_amp = None
@@ -51,13 +51,13 @@ class lock_control:
         result[0:] = self.daq.ai.data[0:]
         return result
 
-    def errsig_measure(self,continuous=False,tmax=0.01,
-                       rate=48000,exttrigger=True):
+    def errsig_measure(self,continuous=False,exttrigger=True):
         channel = self.settings['errsig_chn']
-        self.daq_connect()
+        tmax = self.settings['errsig_tmax']
+        rate = self.settings['errsig_sample_rate']
         samples = int(tmax * rate)
-        self.daq.ai.set_params(channels=[channel],rate=rate,
-                                        samples=samples)
+        self.daq_connect()
+        self.daq.ai.set_params(channels=[channel],rate=rate,samples=samples)
         self.daq.ai.measure(continuous=continuous,exttrigger=exttrigger)
 
     def errsig_get_status(self):
@@ -79,6 +79,9 @@ class lock_control:
         self.daq.dio.bit_out(port,bit,state)
 
     def ramp_set(self,state=True,freq=50.0,rate=50000.0,tmax=0.05):
+        freq = self.settings['ramp_freq']
+        rate = self.settings['ramp_sample_rate']
+        tmax = self.settings['ramp_tmax']
         self.ramp_state = bool(state)
         self.daq_connect()
         

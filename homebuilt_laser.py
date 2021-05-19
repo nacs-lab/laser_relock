@@ -2,9 +2,12 @@
 
 from keithley import keithley
 
+VENDOR = 1510
+PRODUCT = 8704
+
 class homebuilt_laser:
-        def __init__(self):
-            self.keithley = keithley()
+        def __init__(self,vendor=VENDOR,product=PRODUCT):
+            self.keithley = keithley(vendor,product)
             self.current = self.read_current()
             self.piezo = self.read_piezo()
             
