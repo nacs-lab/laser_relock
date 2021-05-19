@@ -3,7 +3,7 @@
 from keithley import keithley
 
 class homebuilt_laser:
-        def __init__(self,dlc_ip=DLC_IP):
+        def __init__(self):
             self.keithley = keithley()
             self.current = self.read_current()
             self.piezo = self.read_piezo()

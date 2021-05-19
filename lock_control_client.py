@@ -13,14 +13,17 @@ class lock_control_client(object):
         self.__sock = self.__ctx.socket(zmq.REQ) # Request socket
         self.__sock.setsockopt(zmq.LINGER, 0) # discards messages when socket is closed
         self.__sock.connect(self.__url)
+        
     def __init__(self, url=URL):
         self.__url = url
         self.__ctx = zmq.Context()
         self.__sock = None
         self.recreate_sock()
+        
     def __del__(self):
         self.__sock.close()
         self.__ctx.destroy()
+        
     def Call(self,name,*args):
         self.__sock.send_string("call",zmq.SNDMORE)
         self.__sock.send_string(name,zmq.SNDMORE)
@@ -29,10 +32,12 @@ class lock_control_client(object):
         else:
             self.__sock.send_pyobj(args)
         return self.__sock.recv_pyobj()
+    
     def Get(self,name):
         self.__sock.send_string("get",zmq.SNDMORE)
         self.__sock.send_string(name)
         return self.__sock.recv_pyobj()
+    
     def Set(self,name,value):
         self.__sock.send_string("set",zmq.SNDMORE)
         self.__sock.send_string(name,zmq.SNDMORE)
@@ -43,7 +48,7 @@ class lock_control_client(object):
 def main(): # run tests if called rather than imported
     # cl = lock_control_client('tcp://127.0.0.1:8000')
     cl = lock_control_client(URL)
-    result = cl.Get('wm.filename')
+    result = cl.Get('wm_filename')
     print(result)
 
     result = cl.Call('errsig.measure',{'continuous':False})

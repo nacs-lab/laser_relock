@@ -5,8 +5,7 @@ Class for remotely controlling & relocking nacs 1.5 stirap lasers
 '''
 
 # reading wavemeter
-#from libnacs.wavemeter import WavemeterParser
-from wavemeter import wavemeter
+from libnacs.wavemeter import WavemeterParser
 import time,calendar
 
 # toptica laser control
@@ -23,14 +22,14 @@ import laser_settings
 class lock_control:
     def __init__(self,laser_name="pump"):
         self.settings = getattr(laser_settings,laser_name)
-        if (self.settings.laser_name == 'toptica'):
+        if (self.settings['laser_type'] == 'toptica'):
             self.laser = toptica_laser()
-        elif (self.settings.laser_name == 'homebuilt'):
+        elif (self.settings['laser_type'] == 'homebuilt'):
             self.laser = homebuilt_laser()
         else:
             raise Exception("not a known laser type")
-        self.daq = mcc_daq(self.settings.daq_device)
-        self.parser = WavemeterParser(self.settings.wm_freq-1000,self.settings.wm_freq+1000)
+        self.daq = mcc_daq(self.settings['daq_device'])
+        self.wm_parser = WavemeterParser(self.settings['wm_freq']-1000,self.settings['wm_freq']+1000)
 
     def daq_connect(self):
         if not self.daq.daq_device.is_connected():
@@ -67,10 +66,10 @@ class lock_control:
 
     def ramp_set(self,state=True,freq=50.0,rate=50000.0,
                  tmax=0.05,channel=1):
-        self.state = bool(state)
+        self.ramp_state = bool(state)
         self.daq_connect()
         
-        amp1 = self.amp
+        amp1 = self.ramp_amp
         t = np.arange(0,tmax,1.0/rate)
         if state:        
             data1 = amp1*signal.sawtooth(2*np.pi*freq*t,0.5)+amp1
@@ -85,17 +84,17 @@ class lock_control:
         self.daq.ao.set_scan(channels=[0,1],rate=rate,
                              data=data,continuous=True)
         self.daq.ao.run()
-            
-        def wm_read(self,duration=20):
-            now = calendar.timegm(time.localtime())
-            times,freqs = self.parser.parse(self.filename,
-                                            now-duration,now)
-            try:
-                result = freqs[-1]
-            except IndexError:
-                result = -1
-            print(result)
-            return result
+        
+    def wm_read(self,duration=20):
+        now = calendar.timegm(time.localtime())
+        times,freqs = self.parser.parse(self.filename,
+                                        now-duration,now)
+        try:
+            result = freqs[-1]
+        except IndexError:
+            result = -1
+        print(result)
+        return result
 
 def main():
     lc = lock_control()
