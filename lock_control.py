@@ -5,7 +5,8 @@ Class for remotely controlling & relocking nacs 1.5 stirap lasers
 '''
 
 # reading wavemeter
-from libnacs.wavemeter import WavemeterParser
+#from libnacs.wavemeter import WavemeterParser
+from wavemeter import wavemeter
 import time,calendar
 
 # toptica laser control
