@@ -6,9 +6,9 @@ VENDOR = 1510
 PRODUCT = 8704
 
 class keithley:
-    def __init__(self):
-        self.vendor = VENDOR
-        self.product = PRODUCT
+    def __init__(self,vendor=VENDOR,product=PRODUCT):
+        self.vendor = vendor
+        self.product = product
         self.connect()
         self.VoltageLimit = 10.0
         self.CurrentLimit = 1.0
