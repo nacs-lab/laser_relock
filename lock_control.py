@@ -18,29 +18,27 @@ from scipy import signal
 import numpy as np
 
 # setting
-import lock_control_settings as settings
+import lock_control_settings 
 
 class lock_control:
-    def __init__(self,laser_name="pump"):
+    def __init__(self,laser_name="stokes"):
 
-        self.settings = getattr(settings,laser_name)
+        settings = getattr(lock_control_settings,laser_name)
+        for name,value in settings.items():
+            setattr(self,name,value)
         
-        if (self.settings['laser_type'] == 'toptica'):
-            self.laser = toptica_laser(self.settings['dlc_ip'])
-        elif (self.settings['laser_type'] == 'homebuilt'):
-            self.laser = homebuilt_laser(self.settings['vendor'],
-                                         self.settings['product'])
+        if self.laser_type is 'toptica':
+            self.laser = toptica_laser(self.dlc_ip)
+        elif self.laser_type is 'homebuilt':
+            self.laser = homebuilt_laser(self.vendor,self.product)
         else:
             raise Exception("not a known laser type")
         
-        self.daq = mcc_daq(self.settings['daq_device'])
-        self.wm_parser = WavemeterParser(self.settings['wm_freq']-1000,
-                                         self.settings['wm_freq']+1000)
+        self.daq = mcc_daq(self.daq_device)
+        self.wm_parser = WavemeterParser(self.wm_freq-1000,self.wm_freq+1000)
+        
         self.lock_state = None
         self.ramp_state = None
-        self.ramp_amp = None
-        self.ramp_freq = None
-        self.ramp_offs = None
 
     def daq_connect(self):
         if not self.daq.daq_device.is_connected():
@@ -52,12 +50,10 @@ class lock_control:
         return result
 
     def errsig_measure(self,continuous=False,exttrigger=True):
-        channel = self.settings['errsig_chn']
-        tmax = self.settings['errsig_tmax']
-        rate = self.settings['errsig_sample_rate']
-        samples = int(tmax * rate)
+        samples = int(self.errsig_tmax * self.errsig_sample_rate)
         self.daq_connect()
-        self.daq.ai.set_params(channels=[channel],rate=rate,samples=samples)
+        self.daq.ai.set_params(channels=[channel],
+                               rate=self.errsig_sample_rate,samples=samples)
         self.daq.ai.measure(continuous=continuous,exttrigger=exttrigger)
 
     def errsig_get_status(self):
@@ -72,24 +68,19 @@ class lock_control:
                 
     def lock_set(self,state=0):
         self.lock_state = bool(state)
-        port = self.settings['lock_port']
-        bit = self.settings['lock_bit']
         self.daq_connect()
-        self.daq.dio.config_port(port,'out')
-        self.daq.dio.bit_out(port,bit,state)
+        self.daq.dio.config_port(self.lock_port,'out')
+        self.daq.dio.bit_out(self.lock_port,self.lock_bit,state)
 
-    def ramp_set(self,state=True,freq=50.0,rate=50000.0,tmax=0.05):
-        freq = self.settings['ramp_freq']
-        rate = self.settings['ramp_sample_rate']
-        tmax = self.settings['ramp_tmax']
+    def ramp_set(self,state=True):
         self.ramp_state = bool(state)
         self.daq_connect()
         
-        t = np.arange(0,tmax,1.0/rate)
-        trig_data = 2.5 * (signal.square(2 * np.pi * freq * t,0.1) + 1.0)
+        t = np.arange(0,self.ramp_tmax,1.0/self.ramp_sample_rate)
+        trig_data = 2.5*(signal.square(2*np.pi*self.ramp_freq*t,0.1)+1.0)
         if state:
-            ramp_data = self.ramp_amp*(signal.sawtooth(2*np.pi*freq*t,
-                                                       0.5)+1.0)
+            ramp_data = self.ramp_amp*(signal.sawtooth(
+                2*np.pi*self.ramp_freq*t)+1.0)
         else:
             ramp_data = 0.0 * t
                 
@@ -97,15 +88,14 @@ class lock_control:
         data = np.reshape(data,(2*len(t),))
         
         self.daq.ao.stop()
-        chns = [self.settings['trig_chn'],self.settings['ramp_chn']]
+        chns = [self.trig_chn,self.ramp_chn]
         self.daq.ao.set_scan(channels=chns,rate=rate,
                              data=data,continuous=True)
         self.daq.ao.run()
         
     def wm_read(self,duration=20):
         now = calendar.timegm(time.localtime())
-        times,freqs = self.parser.parse(self.filename,
-                                        now-duration,now)
+        times,freqs = self.wm_parser.parse(self.wm_file,now-duration,now)
         try:
             result = freqs[-1]
         except IndexError:
@@ -114,7 +104,7 @@ class lock_control:
         return result
 
 def main():
-    lc = lock_control()
+    lc = lock_control('stokes')
 
     print('reading current:')
     current = lc.laser.read_current()
@@ -149,10 +139,10 @@ def main():
     lc.ramp_set(1)
 
     print('measuring error signal:')
-#    lc.errsig.measure
+    lc.errsig_measure(continuous=False,exttrigger=False)
     
     print('not ramping:')
-    lc.ramp.set(0)
+    lc.ramp_set(0)
     time.sleep(1)
 
     

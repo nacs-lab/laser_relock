@@ -39,7 +39,8 @@ class window2:
         self.piezo.grid(row=1,column=0)
 
         self.wavelength = NumericEntryLabeled(self.root,self.panel2,
-                                              self.get_wavelength,self.do_nothing,label="Freq")
+                                              self.get_wavelength,
+                                              self.do_nothing,label="Freq")
         self.wavelength.grid(row=0,column=1)
 
         self.ramp_amp = NumericEntryLabeled(self.root,self.panel2,self.get_ramp_amp,
@@ -47,10 +48,12 @@ class window2:
         self.ramp_amp.grid(row=1,column=1)
 
         # lock, ramp, quit buttons
-        self.ramp_btn = tk.Button(self.panel2,text="Ramp On", width=12, command=self.toggle_ramp)
+        self.ramp_btn = tk.Button(self.panel2,text="Ramp On", width=12,
+                                  command=self.toggle_ramp)
         self.ramp_btn.grid(row=0,column=2)
 
-        self.lock_btn = tk.Button(self.panel2,text="Lock", width=12, command=self.toggle_lock)
+        self.lock_btn = tk.Button(self.panel2,text="Lock", width=12,
+                                  command=self.toggle_lock)
         self.lock_btn.grid(row=1,column=2)
 
         self.quit_button = tk.Button(self.panel2, text = "Quit",
@@ -75,12 +78,12 @@ class window2:
         sys.exit()
         
     def get_errsig(self,exttrigger=True):
-        self.client.Call('errsig.measure',{'exttrigger':exttrigger})
-        return self.client.Call('errsig.data')
+        self.client.Call('errsig_measure',{'exttrigger':exttrigger})
+        return self.client.Call('errsig_data')
 
     def get_wavelength(self):
         #print('get wavelength')
-        return self.client.Call('wm.read')
+        return self.client.Call('wm_read')
 
     def get_current(self):
         #print('get current')
@@ -105,27 +108,27 @@ class window2:
     def toggle_ramp(self):
         if self.ramp_btn.config('text')[-1] == 'Ramp On':
             self.ramp_btn.config(text='Ramp Off')
-            self.client.Call('ramp.set',False)
+            self.client.Call('ramp_set',False)
         else:
             self.ramp_btn.config(text='Ramp On')
-            self.client.Call('ramp.set',True)
+            self.client.Call('ramp_set',True)
 
     def get_ramp_amp(self):
         #print('get ramp amp')
-        return self.client.Get('ramp.amp')
+        return self.client.Get('ramp_amp')
 
     def set_ramp_amp(self,value):
         #print('set ramp amp')
-        self.client.Set('ramp.amp',value)
-        self.client.Call('ramp.set')
+        self.client.Set('ramp_amp',value)
+        self.client.Call('ramp_set')
 
     def toggle_lock(self):
         if self.lock_btn.config('text')[-1] == 'Lock':
             self.lock_btn.config(text='Unlock')
-            self.client.Call('lock.set',False)
+            self.client.Call('lock_set',False)
         else:
             self.lock_btn.config(text='Lock')
-            self.client.Call('lock.set',True)
+            self.client.Call('lock_set',True)
 
 root1 = tk.Tk()
 w = window2(root1)
