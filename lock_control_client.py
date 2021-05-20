@@ -4,7 +4,7 @@ import zmq
 import types
 import time
 
-URL = 'tcp://nacs.nigrp.org:5635'
+URL = 'tcp://nacs.nigrp.org:5633'
 
 class lock_control_client(object):
     def recreate_sock(self):
