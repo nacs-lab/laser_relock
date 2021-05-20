@@ -52,7 +52,7 @@ class lock_control:
     def errsig_measure(self,continuous=False,exttrigger=True):
         samples = int(self.errsig_tmax * self.errsig_sample_rate)
         self.daq_connect()
-        self.daq.ai.set_params(channels=[channel],
+        self.daq.ai.set_params(channels=[self.errsig_chn],
                                rate=self.errsig_sample_rate,samples=samples)
         self.daq.ai.measure(continuous=continuous,exttrigger=exttrigger)
 
@@ -89,7 +89,7 @@ class lock_control:
         
         self.daq.ao.stop()
         chns = [self.trig_chn,self.ramp_chn]
-        self.daq.ao.set_scan(channels=chns,rate=rate,
+        self.daq.ao.set_scan(channels=chns,rate=self.ramp_sample_rate,
                              data=data,continuous=True)
         self.daq.ao.run()
         
@@ -140,6 +140,8 @@ def main():
 
     print('measuring error signal:')
     lc.errsig_measure(continuous=False,exttrigger=False)
+    errsig_data = lc.errsig_data()
+    print(errsig_data)
     
     print('not ramping:')
     lc.ramp_set(0)

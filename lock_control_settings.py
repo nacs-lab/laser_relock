@@ -7,6 +7,7 @@ defaults = {
     'ramp_freq' : 500,
     'ramp_offs' : 0.0,
     'ramp_tmax' : 0.05,
+    'ramp_sample_rate' : 50000,
     'trig_chn' : 1,
     'errsig_chn' : 0,
     'errsig_sample_rate' : 48000,
