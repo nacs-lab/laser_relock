@@ -48,14 +48,14 @@ class lock_control_client(object):
 def main(): # run tests if called rather than imported
     # cl = lock_control_client('tcp://127.0.0.1:8000')
     cl = lock_control_client(URL)
-    result = cl.Get('wm_filename')
+    result = cl.Get('wm_file')
     print(result)
 
     result = cl.Call('errsig_measure',
         {'continuous':False,'exttrigger':False})
     print(result)
 
-    result = cl.Call('errsig.measure',
+    result = cl.Call('errsig_measure',
         {'continuous':True,'exttrigger':False})
     print(result)
 
