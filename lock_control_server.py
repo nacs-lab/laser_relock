@@ -14,6 +14,7 @@ class lock_control_server(object):
         self.__sock = self.__ctx.socket(zmq.REP) # Reply socket
         self.__sock.setsockopt(zmq.LINGER, 0) # discards messages when socket is closed
         self.__sock.bind(self.__url)
+        print('listening on %s' % self.__url)
     def __init__(self,laser_name='stokes',url=URL):
         self.__url = url
         self.__ctx = zmq.Context()
@@ -26,9 +27,12 @@ class lock_control_server(object):
     def listen(self):
         timeout = 1 * 1000 # in milliseconds
         if self.__sock.poll(timeout) == 0:
+            #print('timeout')
             return
         cmd = self.__sock.recv_string()
+        print(cmd)
         name = self.__sock.recv_string()
+        print(name)
         if cmd=="get":
             result = self.Get(name)
         elif cmd=="set":
@@ -40,20 +44,16 @@ class lock_control_server(object):
         else:
             result = Exception('Command must be one of ("get","set","call")')
         try:
-            #print(type(result))
             self.__sock.send_pyobj(result)
         except:
             self.__sock.send_string('incompatible type')
     def Get(self,name):
         try:
             result = rgetattr(self.lc, name)
-            #print(result)
-            #print(type(result))
+            print(result)
         except Exception as inst:
             print(inst)
             result = str(inst)
-            raise inst
-        #print(name,result)
         return result
     def Set(self,name,value):
         #print(name,value)
@@ -62,7 +62,6 @@ class lock_control_server(object):
         except Exception as inst:
             print(inst)
             result = str(inst)
-            raise inst
         return result
     def Call(self,name,args):
         #print(name,args)
@@ -75,7 +74,6 @@ class lock_control_server(object):
         except Exception as inst:
             print(inst)
             result = str(inst)
-            raise inst
         #print(result)
         return result
 

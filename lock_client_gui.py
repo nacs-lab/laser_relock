@@ -77,28 +77,28 @@ class window2:
         self.root.after_cancel(self.after_id)
         sys.exit()
         
-    def get_errsig(self,exttrigger=True):
+    def get_errsig(self,exttrigger=False):
         self.client.Call('errsig_measure',{'exttrigger':exttrigger})
         return self.client.Call('errsig_data')
 
     def get_wavelength(self):
-        #print('get wavelength')
+        print('get wavelength')
         return self.client.Call('wm_read')
 
     def get_current(self):
-        #print('get current')
+        print('get current')
         return self.client.Call('laser.read_current')
 
     def get_piezo(self):
-        #print('get pzt')
+        print('get pzt')
         return self.client.Call('laser.read_piezo')
 
     def set_current(self,value):
-        #print('set current')
+        print('set current')
         self.client.Call('laser.set_current',value)
 
     def set_piezo(self,value):
-        #print('set pst')
+        print('set pzt')
         self.client.Call('laser.set_piezo',value)
         self.current.entry.update()
 
@@ -106,6 +106,7 @@ class window2:
         pass
 
     def toggle_ramp(self):
+        print('toggle ramp')
         if self.ramp_btn.config('text')[-1] == 'Ramp On':
             self.ramp_btn.config(text='Ramp Off')
             self.client.Call('ramp_set',False)
@@ -114,15 +115,16 @@ class window2:
             self.client.Call('ramp_set',True)
 
     def get_ramp_amp(self):
-        #print('get ramp amp')
+        print('get ramp amp')
         return self.client.Get('ramp_amp')
 
     def set_ramp_amp(self,value):
-        #print('set ramp amp')
+        print('set ramp amp')
         self.client.Set('ramp_amp',value)
         self.client.Call('ramp_set')
 
     def toggle_lock(self):
+        print('toggle lock')
         if self.lock_btn.config('text')[-1] == 'Lock':
             self.lock_btn.config(text='Unlock')
             self.client.Call('lock_set',False)
