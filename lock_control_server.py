@@ -14,12 +14,12 @@ class lock_control_server(object):
         self.__sock = self.__ctx.socket(zmq.REP) # Reply socket
         self.__sock.setsockopt(zmq.LINGER, 0) # discards messages when socket is closed
         self.__sock.bind(self.__url)
-    def __init__(self, url=URL):
+    def __init__(self,laser_name='stokes',url=URL):
         self.__url = url
         self.__ctx = zmq.Context()
         self.__sock = None
         self.recreate_sock()
-        self.lc = lock_control()
+        self.lc = lock_control(laser_name)
     def __del__(self):
         self.__sock.close()
         self.__ctx.destroy()
