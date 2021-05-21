@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import zmq
-import types
 import time
 
 URL = 'tcp://nacs.nigrp.org:5633'
