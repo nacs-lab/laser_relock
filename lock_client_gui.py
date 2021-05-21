@@ -48,7 +48,7 @@ class window2:
         self.ramp_amp.grid(row=1,column=1)
 
         # lock, ramp, quit buttons
-        self.ramp_btn = tk.Button(self.panel2,text="Ramp On", width=12,
+        self.ramp_btn = tk.Button(self.panel2,text="Ramp Off", width=12,
                                   command=self.toggle_ramp)
         self.ramp_btn.grid(row=0,column=2)
 
