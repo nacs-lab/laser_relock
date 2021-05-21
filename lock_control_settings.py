@@ -4,14 +4,14 @@ defaults = {
     'wm_file' : '/mnt/wavemeter/20210111.csv',
     'ramp_chn' : 0,
     'ramp_amp' : 0.1,
-    'ramp_freq' : 500,
+    'ramp_freq' : 200,
     'ramp_offs' : 0.0,
     'ramp_tmax' : 0.1,
     'ramp_sample_rate' : 50000,
     'trig_chn' : 1,
     'errsig_chn' : 0,
     'errsig_sample_rate' : 48000,
-    'errsig_tmax' : 0.1,
+    'errsig_tmax' : 0.01,
     'lock_port' : 1, # 0=A, 1=B
     'lock_bit' : 0,
 }
