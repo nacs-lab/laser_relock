@@ -170,7 +170,7 @@ class mcc_daq:
             port = self.parse_port(port)
             direction = self.parse_direction(direction)
             self.dio_device.d_config_port(port, direction)
-            print('Configured port',port,'for direction',direction)
+            #print('Configured port',port,'for direction',direction)
 
         def config_bit(self,port,bit,direction):
             port = self.parse_port(port)
@@ -180,9 +180,9 @@ class mcc_daq:
         def bit_out(self,port,bit,value):
             port = self.parse_port(port)
             self.dio_device.d_bit_out(port,bit,value)
-            print(port)
-            print(bit)
-            print(value)
+            #print(port)
+            #print(bit)
+            #print(value)
 
         def port_out(self,port,value):
             port = self.parse_port(port)
