@@ -82,7 +82,7 @@ class lock_control:
         trig_data = 2.5*(signal.square(2*np.pi*self.ramp_freq*t,0.1)+1.0)
         if state:
             ramp_data = self.ramp_amp*(signal.sawtooth(
-                2*np.pi*self.ramp_freq*t)+1.0)
+                2*np.pi*self.ramp_freq*t,0.5)+1.0)
         else:
             ramp_data = 0.0 * t
                 
