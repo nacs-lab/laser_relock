@@ -49,7 +49,9 @@ class lock_control:
         result[0:] = self.daq.ai.data[0:]
         return result
 
-    def errsig_measure(self,continuous=False,exttrigger=True):
+    def errsig_measure(self,continuous=False,exttrigger=False):
+        print('measuring')
+        print(exttrigger)
         samples = int(self.errsig_tmax * self.errsig_sample_rate)
         self.daq_connect()
         self.daq.ai.set_params(channels=[self.errsig_chn],
