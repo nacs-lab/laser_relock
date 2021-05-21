@@ -30,9 +30,9 @@ class lock_control_server(object):
             #print('timeout')
             return
         cmd = self.__sock.recv_string()
-        print(cmd)
+        #print(cmd)
         name = self.__sock.recv_string()
-        print(name)
+        #print(name)
         if cmd=="get":
             result = self.Get(name)
         elif cmd=="set":
@@ -50,7 +50,7 @@ class lock_control_server(object):
     def Get(self,name):
         try:
             result = rgetattr(self.lc, name)
-            print(result)
+            #print(result)
         except Exception as inst:
             print(inst)
             result = str(inst)

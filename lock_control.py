@@ -50,8 +50,8 @@ class lock_control:
         return result
 
     def errsig_measure(self,continuous=False,exttrigger=False):
-        print('measuring')
-        print(exttrigger)
+        #print('measuring')
+        #print(exttrigger)
         samples = int(self.errsig_tmax * self.errsig_sample_rate)
         self.daq_connect()
         self.daq.ai.set_params(channels=[self.errsig_chn],
@@ -82,7 +82,7 @@ class lock_control:
         trig_data = 2.5*(signal.square(2*np.pi*self.ramp_freq*t,0.1)+1.0)
         if state:
             ramp_data = self.ramp_amp*(signal.sawtooth(
-                2*np.pi*self.ramp_freq*t)+1.0)
+                2*np.pi*self.ramp_freq*t,0.5)+1.0)
         else:
             ramp_data = 0.0 * t
                 
