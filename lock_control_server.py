@@ -14,16 +14,21 @@ class lock_control_server(object):
         self.__sock = self.__ctx.socket(zmq.REP) # Reply socket
         self.__sock.setsockopt(zmq.LINGER, 0) # discards messages when socket is closed
         self.__sock.bind(self.__url)
-        print('listening on %s' % self.__url)
+
     def __init__(self,laser_name='stokes',url=URL):
         self.__url = url
         self.__ctx = zmq.Context()
         self.__sock = None
         self.recreate_sock()
-        self.lc = lock_control(laser_name)
+        #self.lc = lock_control(laser_name)
+        self.laser_name = laser_name
+        self.connected = False
+
     def __del__(self):
         self.__sock.close()
         self.__ctx.destroy()
+        print('closed connection')
+
     def listen(self):
         timeout = 1 * 1000 # in milliseconds
         if self.__sock.poll(timeout) == 0:
@@ -47,6 +52,7 @@ class lock_control_server(object):
             self.__sock.send_pyobj(result)
         except:
             self.__sock.send_string('incompatible type')
+
     def Get(self,name):
         try:
             result = rgetattr(self.lc, name)
@@ -55,6 +61,7 @@ class lock_control_server(object):
             print(inst)
             result = str(inst)
         return result
+
     def Set(self,name,value):
         #print(name,value)
         try:
@@ -63,6 +70,7 @@ class lock_control_server(object):
             print(inst)
             result = str(inst)
         return result
+
     def Call(self,name,args):
         #print(name,args)
         try:
