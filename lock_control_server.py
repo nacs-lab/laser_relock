@@ -20,9 +20,9 @@ class lock_control_server(object):
         self.__ctx = zmq.Context()
         self.__sock = None
         self.recreate_sock()
-        #self.lc = lock_control(laser_name)
-        self.laser_name = laser_name
-        self.connected = False
+        self.lc = lock_control(laser_name)
+        #self.laser_name = laser_name
+        #self.connected = False
 
     def __del__(self):
         self.__sock.close()
