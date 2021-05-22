@@ -52,7 +52,7 @@ class window2:
                                   command=self.toggle_ramp)
         self.ramp_btn.grid(row=0,column=2)
 
-        self.lock_btn = tk.Button(self.panel2,text="Lock", width=12,
+        self.lock_btn = tk.Button(self.panel2,text="Unlocked", width=12,
                                   command=self.toggle_lock)
         self.lock_btn.grid(row=1,column=2)
 
@@ -125,11 +125,11 @@ class window2:
 
     def toggle_lock(self):
         #print('toggle lock')
-        if self.lock_btn.config('text')[-1] == 'Lock':
-            self.lock_btn.config(text='Unlock')
+        if self.lock_btn.config('text')[-1] == 'Unlocked':
+            self.lock_btn.config(text='Locked')
             self.client.Call('lock_set',False)
         else:
-            self.lock_btn.config(text='Lock')
+            self.lock_btn.config(text='Unlocked')
             self.client.Call('lock_set',True)
 
 root1 = tk.Tk()
