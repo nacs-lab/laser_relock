@@ -17,10 +17,11 @@ stokes = {
     'wm_freq' : 472166,
     'daq_device' : 0,
     'lock_port' : 1, # 0=A, 1=B
-    'lock_bit' : 0,
-    'trig_chn' : 1,
-    'errsig_chn' : 0,
-    'ramp_chn' : 0,
+    'lock_bit' : 0, # DO
+    'trig_chn' : 1, # analog out
+    'errsig_chn' : 0, # analog in
+    'ramp_chn' : 0, # analog out
+    'servo_chn': 1, # analog in
 }
 stokes.update(defaults)
 
@@ -31,9 +32,10 @@ pump = {
     'vendor' : 1510,
     'product' : 8704,
     'lock_port' : 1, # 0=A, 1=B
-    'lock_bit' : 0,
-    'trig_chn' : 1,
-    'errsig_chn' : 0,
-    'ramp_chn' : 0,
+    'lock_bit' : 0, # digital out
+    'trig_chn' : 1, # analog out
+    'errsig_chn' : 0, # analog in
+    'ramp_chn' : 0, # analog out
+    'servo_chn': 1, # analog in
 }
 pump.update(defaults)
