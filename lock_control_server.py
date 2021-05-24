@@ -15,14 +15,14 @@ class lock_control_server(object):
         self.__sock.setsockopt(zmq.LINGER, 0) # discards messages when socket is closed
         self.__sock.bind(self.__url)
 
-    def __init__(self,laser_name='pump',url=URL):
+    def __init__(self,url=URL):
         self.__url = url
         self.__ctx = zmq.Context()
         self.__sock = None
         self.recreate_sock()
-        self.lc = lock_control(laser_name)
-        #self.laser_name = laser_name
-        #self.connected = False
+        self.lc = dict()
+        self.lc['pump'] = lock_control('pump')
+        self.lc['stokes'] = lock_control('stokes')
 
     def __del__(self):
         self.__sock.close()
@@ -32,20 +32,18 @@ class lock_control_server(object):
     def listen(self):
         timeout = 1 * 1000 # in milliseconds
         if self.__sock.poll(timeout) == 0:
-            #print('timeout')
             return
         cmd = self.__sock.recv_string()
-        #print(cmd)
         name = self.__sock.recv_string()
-        #print(name)
+        laser = self.__sock.recv_string()
         if cmd=="get":
-            result = self.Get(name)
+            result = self.Get(laser,name)
         elif cmd=="set":
             value = self.__sock.recv_pyobj()
-            result = self.Set(name,value)
+            result = self.Set(laser,name,value)
         elif cmd=="call":
             args = self.__sock.recv_pyobj()    
-            result = self.Call(name,args)
+            result = self.Call(laser,name,args)
         else:
             result = Exception('Command must be one of ("get","set","call")')
         try:
@@ -53,28 +51,25 @@ class lock_control_server(object):
         except:
             self.__sock.send_string('incompatible type')
 
-    def Get(self,name):
+    def Get(self,laser,name):
         try:
-            result = rgetattr(self.lc, name)
-            #print(result)
+            result = rgetattr(self.lc[laser], name)
         except Exception as inst:
             print(inst)
             result = str(inst)
         return result
 
-    def Set(self,name,value):
-        #print(name,value)
+    def Set(self,laser,name,value):
         try:
-            result = rsetattr(self.lc, name, value)
+            result = rsetattr(self.lc[laser], name, value)
         except Exception as inst:
             print(inst)
             result = str(inst)
         return result
 
-    def Call(self,name,args):
-        #print(name,args)
+    def Call(self,laser,name,args):
         try:
-            attr = rgetattr(self.lc, name)
+            attr = rgetattr(self.lc[laser], name)
             if isinstance(args,tuple):
                 result = attr(*args)
             elif isinstance(args,dict):
@@ -82,7 +77,6 @@ class lock_control_server(object):
         except Exception as inst:
             print(inst)
             result = str(inst)
-        #print(result)
         return result
 
 # from https://stackoverflow.com/questions/31174295/getattr-and-setattr...
