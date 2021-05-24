@@ -48,13 +48,13 @@ class window2:
         self.ramp_amp.grid(row=1,column=1)
 
         # lock, ramp, quit buttons
-        self.ramp_btn = tk.Button(self.panel2,text="Ramp Off", width=12,
-                                  command=self.toggle_ramp)
-        self.ramp_btn.grid(row=0,column=2)
+        #self.ramp_btn = tk.Button(self.panel2,text="Ramp Off", width=12,
+        #                          command=self.toggle_ramp)
+        #self.ramp_btn.grid(row=0,column=2)
 
-        self.lock_btn = tk.Button(self.panel2,text="Lock", width=12,
+        self.lock_btn = tk.Button(self.panel2,text="Unlocked", width=12,
                                   command=self.toggle_lock)
-        self.lock_btn.grid(row=1,column=2)
+        self.lock_btn.grid(row=0,column=2)
 
         self.quit_button = tk.Button(self.panel2, text = "Quit",
                                  command = self.panel2.quit)
@@ -67,7 +67,8 @@ class window2:
             #print('update wl')
             self.wavelength.entry.update()
             self.now = time.time()
-        exttrigger = self.ramp_btn.config('text')[-1] == 'Ramp On'
+        #exttrigger = self.ramp_btn.config('text')[-1] == 'Ramp On'
+        exttrigger = self.lock_btn.config('text')[-1] == 'Unlocked'
         self.errsig = self.get_errsig(exttrigger=exttrigger)
         self.line.set_ydata(self.errsig)
         self.canvas.draw()
@@ -105,14 +106,14 @@ class window2:
     def do_nothing(self,*args):
         pass
 
-    def toggle_ramp(self):
+    #def toggle_ramp(self):
         #print('toggle ramp')
-        if self.ramp_btn.config('text')[-1] == 'Ramp On':
-            self.ramp_btn.config(text='Ramp Off')
-            self.client.Call('ramp_set',False)
-        else:
-            self.ramp_btn.config(text='Ramp On')
-            self.client.Call('ramp_set',True)
+    #    if self.ramp_btn.config('text')[-1] == 'Ramp On':
+    #        self.ramp_btn.config(text='Ramp Off')
+    #        self.client.Call('ramp_set',False)
+    #    else:
+    #        self.ramp_btn.config(text='Ramp On')
+    #        self.client.Call('ramp_set',True)
 
     def get_ramp_amp(self):
         #print('get ramp amp')
@@ -125,11 +126,13 @@ class window2:
 
     def toggle_lock(self):
         #print('toggle lock')
-        if self.lock_btn.config('text')[-1] == 'Lock':
-            self.lock_btn.config(text='Unlock')
+        if self.lock_btn.config('text')[-1] == 'Unlocked':
+            self.lock_btn.config(text='Locked')
             self.client.Call('lock_set',False)
+            self.client.Call('ramp_set',True)
         else:
-            self.lock_btn.config(text='Lock')
+            self.lock_btn.config(text='Unlocked')
+            self.client.Call('ramp_set',False)
             self.client.Call('lock_set',True)
 
 root1 = tk.Tk()
