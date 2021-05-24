@@ -29,7 +29,6 @@ class window2:
         self.line, = self.ax1.plot(self.get_errsig())
         self.canvas = FigureCanvasTkAgg(self.fig,master=self.root)
         self.canvas.get_tk_widget().grid()
-        #self.canvas.mpl_connect('close_event', self.on_close)
         self.ax1.set_ylim([-0.25,0.25])
 
         # lower frame with numbers & buttons
@@ -73,10 +72,6 @@ class window2:
         self.line.set_ydata(self.errsig)
         self.canvas.draw()
         self.after_id = self.root.after(self.sleepTime,self.update)
-        
-    def on_close(self,ind):
-        self.root.after_cancel(self.after_id)
-        sys.exit()
         
     def get_errsig(self,exttrigger=False):
         self.client.Call('errsig_measure',{'exttrigger':exttrigger})
