@@ -10,7 +10,15 @@ import time
 
 class window2:
     def __init__(self, master1):
-        self.client = lock_control_client('pump')
+
+        if len(sys.argv) > 1:
+            self.laser_name = sys.argv[1]
+            print('laser name: %s' % self.laser_name)
+        else:
+            self.laser_name = 'pump'
+            print('using default laser: %s' % self.laser_name)
+
+        self.client = lock_control_client(self.laser_name)
         self.root = master1
         self.sleepTime = 10
         self.now = time.time()
@@ -21,7 +29,7 @@ class window2:
         self.line, = self.ax1.plot(self.get_errsig())
         self.canvas = FigureCanvasTkAgg(self.fig,master=self.root)
         self.canvas.get_tk_widget().grid()
-        self.canvas.mpl_connect('close_event', self.on_close)
+        #self.canvas.mpl_connect('close_event', self.on_close)
         self.ax1.set_ylim([-0.25,0.25])
 
         # lower frame with numbers & buttons
