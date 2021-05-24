@@ -9,9 +9,9 @@ from lock_control_client import lock_control_client
 import time
 
 class window2:
-    def __init__(self, master1):
+    def __init__(self, master1, laser_name = 'pump'):
         
-        self.client = lock_control_client()
+        self.client = lock_control_client(laser_name)
         self.root = master1
         self.sleepTime = 10
         self.now = time.time()
@@ -76,49 +76,32 @@ class window2:
         return self.client.Call('errsig_data')
 
     def get_wavelength(self):
-        #print('get wavelength')
         return self.client.Call('wm_read')
 
     def get_current(self):
-        #print('get current')
         return self.client.Call('laser.read_current')
 
     def get_piezo(self):
-        #print('get pzt')
         return self.client.Call('laser.read_piezo')
 
     def set_current(self,value):
-        #print('set current')
         self.client.Call('laser.set_current',value)
 
     def set_piezo(self,value):
-        #print('set pzt')
         self.client.Call('laser.set_piezo',value)
         self.current.entry.update()
 
     def do_nothing(self,*args):
         pass
 
-    #def toggle_ramp(self):
-        #print('toggle ramp')
-    #    if self.ramp_btn.config('text')[-1] == 'Ramp On':
-    #        self.ramp_btn.config(text='Ramp Off')
-    #        self.client.Call('ramp_set',False)
-    #    else:
-    #        self.ramp_btn.config(text='Ramp On')
-    #        self.client.Call('ramp_set',True)
-
     def get_ramp_amp(self):
-        #print('get ramp amp')
         return self.client.Get('ramp_amp')
 
     def set_ramp_amp(self,value):
-        #print('set ramp amp')
         self.client.Set('ramp_amp',value)
         self.client.Call('ramp_set')
 
     def toggle_lock(self):
-        #print('toggle lock')
         if self.lock_btn.config('text')[-1] == 'Unlocked':
             self.lock_btn.config(text='Locked')
             self.client.Call('lock_set',False)
@@ -128,7 +111,10 @@ class window2:
             self.client.Call('ramp_set',False)
             self.client.Call('lock_set',True)
 
+if len(sys.argv) > 1:
+    laser_name = sys.argv[1]
+
 root1 = tk.Tk()
-w = window2(root1)
+w = window2(root1,laser_name)
 w.after_id = w.root.after(w.sleepTime,w.update)
 w.root.mainloop()

@@ -13,11 +13,12 @@ class lock_control_client(object):
         self.__sock.setsockopt(zmq.LINGER, 0) # discards messages when socket is closed
         self.__sock.connect(self.__url)
         
-    def __init__(self, url=URL):
+    def __init__(self, url=URL, laser_name = 'pump'):
         self.__url = url
         self.__ctx = zmq.Context()
         self.__sock = None
         self.recreate_sock()
+        self.laser_name = laser_name
         
     def __del__(self):
         self.__sock.close()
@@ -25,6 +26,7 @@ class lock_control_client(object):
         
     def Call(self,name,*args):
         self.__sock.send_string("call",zmq.SNDMORE)
+        self.__sock.send_string(self.laser_name,zmq.SNDMORE)
         self.__sock.send_string(name,zmq.SNDMORE)
         if len(args)==1 and isinstance(args[0],dict):
             self.__sock.send_pyobj(args[0])
@@ -34,11 +36,13 @@ class lock_control_client(object):
     
     def Get(self,name):
         self.__sock.send_string("get",zmq.SNDMORE)
+        self.__sock.send_string(self.laser_name,zmq.SNDMORE)
         self.__sock.send_string(name)
         return self.__sock.recv_pyobj()
     
     def Set(self,name,value):
         self.__sock.send_string("set",zmq.SNDMORE)
+        self.__sock.send_string(self.laser_name,zmq.SNDMORE)
         self.__sock.send_string(name,zmq.SNDMORE)
         self.__sock.send_pyobj(value)
         return self.__sock.recv_pyobj()
