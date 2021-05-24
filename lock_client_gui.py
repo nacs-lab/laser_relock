@@ -9,7 +9,7 @@ from lock_control_client import lock_control_client
 import time
 
 class window2:
-    def __init__(self, master1, laser_name = 'pump'):
+    def __init__(self, master1, laser_name):
         
         self.client = lock_control_client(laser_name)
         self.root = master1
@@ -113,6 +113,9 @@ class window2:
 
 if len(sys.argv) > 1:
     laser_name = sys.argv[1]
+else:
+    laser_name = 'pump'
+    print('using default laser: %s' % laser_name)
 
 root1 = tk.Tk()
 w = window2(root1,laser_name)

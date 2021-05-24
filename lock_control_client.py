@@ -50,7 +50,7 @@ class lock_control_client(object):
 
 def main(): # run tests if called rather than imported
     # cl = lock_control_client('tcp://127.0.0.1:8000')
-    cl = lock_control_client(URL)
+    cl = lock_control_client(URL,'pump')
     result = cl.Get('wm_file')
     print(result)
 
