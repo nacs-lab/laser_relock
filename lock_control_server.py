@@ -15,7 +15,7 @@ class lock_control_server(object):
         self.__sock.setsockopt(zmq.LINGER, 0) # discards messages when socket is closed
         self.__sock.bind(self.__url)
 
-    def __init__(self,laser_name='stokes',url=URL):
+    def __init__(self,laser_name='pump',url=URL):
         self.__url = url
         self.__ctx = zmq.Context()
         self.__sock = None
