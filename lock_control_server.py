@@ -27,15 +27,14 @@ class lock_control_server(object):
     def __del__(self):
         self.__sock.close()
         self.__ctx.destroy()
-        print('closed connection')
 
     def listen(self):
         timeout = 1 * 1000 # in milliseconds
         if self.__sock.poll(timeout) == 0:
             return
         cmd = self.__sock.recv_string()
-        name = self.__sock.recv_string()
         laser = self.__sock.recv_string()
+        name = self.__sock.recv_string()
         if cmd=="get":
             result = self.Get(laser,name)
         elif cmd=="set":
