@@ -17,6 +17,7 @@ class NumericEntry(tk.Entry):
         tk.Entry.__init__(self,panel,validate='key',validatecommand=vcmd)
         self.bind('<Up>', self.arrowKey)
         self.bind('<Down>', self.arrowKey)
+        self.bind('<Return>',self.enterKey)
         self.getter = getter
         self.setter = setter
         self.value = self.getter()
@@ -60,3 +61,6 @@ class NumericEntry(tk.Entry):
         self.delete(0,tk.END)
         self.insert(0,f'{self.value:.4f}')
         self.icursor(curs_pos + new_digits - digits)
+
+    def enterKey(self,event):
+        self.setter(self.value)
