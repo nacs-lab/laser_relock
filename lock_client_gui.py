@@ -47,11 +47,7 @@ class window2:
                                      self.set_ramp_amp,label="RampAmp")
         self.ramp_amp.grid(row=1,column=1)
 
-        # lock, ramp, quit buttons
-        #self.ramp_btn = tk.Button(self.panel2,text="Ramp Off", width=12,
-        #                          command=self.toggle_ramp)
-        #self.ramp_btn.grid(row=0,column=2)
-
+        # lock, quit buttons
         self.lock_btn = tk.Button(self.panel2,text="Unlocked", width=12,
                                   command=self.toggle_lock)
         self.lock_btn.grid(row=0,column=2)
@@ -62,12 +58,9 @@ class window2:
 
         
     def update(self):
-        #print(time.time()-self.now)
         if (time.time() - self.now) > 1.0:
-            #print('update wl')
             self.wavelength.entry.update()
             self.now = time.time()
-        #exttrigger = self.ramp_btn.config('text')[-1] == 'Ramp On'
         exttrigger = self.lock_btn.config('text')[-1] == 'Unlocked'
         self.errsig = self.get_errsig(exttrigger=exttrigger)
         self.line.set_ydata(self.errsig)
