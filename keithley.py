@@ -18,6 +18,9 @@ class keithley:
     def connect(self):
         self.inst = usbtmc.Instrument(VENDOR,PRODUCT)
         self.inst.open()
+        self.set_remote()
+        
+    def set_remote(self):
         self.inst.write('SYST:REM')
         
     def close(self):

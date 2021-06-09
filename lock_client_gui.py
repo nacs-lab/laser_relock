@@ -19,6 +19,9 @@ class window2:
             print('using default laser: %s' % self.laser_name)
 
         self.client = lock_control_client(self.laser_name)
+        if self.laser_name is 'pump':
+            self.client.Call('laser.keithley.set_remote')
+
         self.root = master1
         self.sleepTime = 10
         self.now = time.time()
