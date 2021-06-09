@@ -107,10 +107,10 @@ class window2:
         if self.lock_btn.config('text')[-1] == 'Unlocked':
             self.lock_btn.config(text='Locked')
             self.client.Call('lock_set',False)
-            self.client.Call('ramp_set',True)
+            self.client.Call('ramp_set',False)
         else:
             self.lock_btn.config(text='Unlocked')
-            self.client.Call('ramp_set',False)
+            self.client.Call('ramp_set',True)
             self.client.Call('lock_set',True)
 
 
