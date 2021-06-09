@@ -15,25 +15,25 @@ stokes = {
     'laser_type' : 'toptica',
     'dlc_ip' : '192.168.0.205',
     'wm_freq' : 472166,
-    'daq_device' : 0,
+    'daq_device' : 1,
     'lock_port' : 1, # 0=A, 1=B
     'lock_bit' : 0,
-    'trig_chn' : 1,
-    'errsig_chn' : 0,
-    'ramp_chn' : 0,
+    'trig_chn' : 0, # analog out
+    'errsig_chn' : 0, # analog in
+    'ramp_chn' : 1, # analog out
 }
 stokes.update(defaults)
 
 pump = {
     'laser_type' : 'homebuilt',
     'wm_freq' : 325130,
-    'daq_device' : 1,
+    'daq_device' : 0,
     'vendor' : 1510,
     'product' : 8704,
     'lock_port' : 1, # 0=A, 1=B
     'lock_bit' : 0,
-    'trig_chn' : 1,
-    'errsig_chn' : 0,
-    'ramp_chn' : 0,
+    'trig_chn' : 0, # analog out
+    'errsig_chn' : 0, # analog in
+    'ramp_chn' : 1, # analog out
 }
 pump.update(defaults)

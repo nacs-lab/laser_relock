@@ -80,7 +80,7 @@ class lock_control:
         
         t = np.arange(0,self.ramp_tmax,1.0/self.ramp_sample_rate)
         trig_data = 2.5*(signal.square(2*np.pi*self.ramp_freq*t,0.1)+1.0)
-        if state:
+        if self.ramp_state:
             ramp_data = self.ramp_amp*(signal.sawtooth(
                 2*np.pi*self.ramp_freq*t,0.5)+1.0)
         else:
